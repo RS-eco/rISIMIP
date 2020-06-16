@@ -4,7 +4,9 @@
 \name{delta_runmean31_tas}
 \alias{delta_runmean31_tas}
 \title{Years of global mean temperature thresholds}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.frame with years of global mean temperature thresholds according to ISIMIP2b climate models
 }

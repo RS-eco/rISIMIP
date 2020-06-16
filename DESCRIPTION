@@ -21,7 +21,7 @@ Suggests:
 License: MIT + file LICENSE
 LazyData: TRUE
 VignetteBuilder: knitr
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 NeedsCompilation: no
 Author: RS-eco [cre, aut]
 URL: https://github.com/RS-eco/rISIMIP

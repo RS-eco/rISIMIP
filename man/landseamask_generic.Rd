@@ -4,7 +4,9 @@
 \name{landseamask_generic}
 \alias{landseamask_generic}
 \title{Land sea mask of ISIMIP data}
-\format{\code{RasterLayer}}
+\format{
+\code{RasterLayer}
+}
 \description{
 RasterLayer with land sea mask of ISIMIP data
 }

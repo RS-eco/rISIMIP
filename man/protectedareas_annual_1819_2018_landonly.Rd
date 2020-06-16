@@ -4,7 +4,9 @@
 \name{protectedareas_annual_1819_2018_landonly}
 \alias{protectedareas_annual_1819_2018_landonly}
 \title{Annual protected areas data at 0.5 degree}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.frame with protected areas coverage per year at 0.5 degree resolution
 }

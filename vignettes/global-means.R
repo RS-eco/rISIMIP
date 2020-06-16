@@ -228,4 +228,3 @@ knitr::opts_chunk$set(echo=T, warning=F, comment=NA, message=F, eval=F)
 #                       legend.background = element_rect(fill = NA),
 #                       panel.spacing.x=unit(0.25, "lines"),
 #                       panel.spacing.y=unit(0.25, "lines"))
-

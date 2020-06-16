@@ -4,7 +4,9 @@
 \name{landuse-totals_rcp60_gfdl-esm2m_1995}
 \alias{landuse-totals_rcp60_gfdl-esm2m_1995}
 \title{Global total landuse for 30-yr period centered around 1995 derived from GFDL-ESM2M model data under RCP6.0}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.framewith percentage cover of each totals landuse class for 1995 
 according to GFDL-ESM2M model data under RCP2.6

@@ -4,7 +4,9 @@
 \name{protectedareas_iucn_cat_2018_landonly}
 \alias{protectedareas_iucn_cat_2018_landonly}
 \title{Protected area coverage by IUCN category at 0.5 degree}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.frame with protected area coverage for each IUCN category in 2018 at 0.5 degree resolution
 }

@@ -4,7 +4,9 @@
 \name{bioclim_miroc5_rcp26_2080_landonly}
 \alias{bioclim_miroc5_rcp26_2080_landonly}
 \title{Global bioclimatic data for 30-yr period centered around 2080 acquired from MIROC5 model data under RCP2.6}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.frame with global bioclimatic for 2080 according to MIROC5 model data under RCP2.6
 }

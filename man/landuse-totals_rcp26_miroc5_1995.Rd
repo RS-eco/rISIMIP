@@ -4,7 +4,9 @@
 \name{landuse-totals_rcp26_miroc5_1995}
 \alias{landuse-totals_rcp26_miroc5_1995}
 \title{Global total landuse for 30-yr period centered around 1995 derived from MIROC5 model data under RCP2.6}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.framewith percentage cover of each totals landuse class for 1995 
 according to MIROC5 model data under RCP2.6

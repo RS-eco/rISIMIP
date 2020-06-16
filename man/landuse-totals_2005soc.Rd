@@ -4,7 +4,9 @@
 \name{landuse-totals_2005soc}
 \alias{landuse-totals_2005soc}
 \title{Total landuse of 2005}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.frame with percentage cover of each totals landuse class for 2005
 }

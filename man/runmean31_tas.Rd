@@ -4,7 +4,9 @@
 \name{runmean31_tas}
 \alias{runmean31_tas}
 \title{31-year runing mean of global mean temperature}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 Dataframe with 31-year running mean past and future simulated global mean temperature
 }

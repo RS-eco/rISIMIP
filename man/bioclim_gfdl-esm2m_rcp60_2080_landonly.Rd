@@ -4,7 +4,9 @@
 \name{bioclim_gfdl-esm2m_rcp60_2080_landonly}
 \alias{bioclim_gfdl-esm2m_rcp60_2080_landonly}
 \title{Global bioclimatic data for 30-yr period centered around 2080 acquired from GFDL-ESM2M model data under RCP6.0}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.frame with global bioclimatic for 2080 according to GFDL-ESM2M model data under RCP6.0
 }

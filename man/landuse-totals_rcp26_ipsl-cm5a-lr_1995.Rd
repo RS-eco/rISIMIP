@@ -4,7 +4,9 @@
 \name{landuse-totals_rcp26_ipsl-cm5a-lr_1995}
 \alias{landuse-totals_rcp26_ipsl-cm5a-lr_1995}
 \title{Global total landuse for 30-yr period centered around 1995 derived from IPSL-CM5A-LR model data under RCP2.6}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.framewith percentage cover of each totals landuse class for 1995 
 according to IPSL-CM5A-LR model data under RCP2.6

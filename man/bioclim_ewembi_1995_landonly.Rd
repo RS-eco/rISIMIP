@@ -4,7 +4,9 @@
 \name{bioclim_ewembi_1995_landonly}
 \alias{bioclim_ewembi_1995_landonly}
 \title{Global bioclimatic data for 30-yr period centered around 1995 acquired from EWEMBI data}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 data.frame with global bioclimatic for 1995 according to EWEMBI observed data
 }

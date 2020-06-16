@@ -4,7 +4,9 @@
 \name{yearmean_tas}
 \alias{yearmean_tas}
 \title{Annual global mean temperature}
-\format{\code{data.frame}}
+\format{
+\code{data.frame}
+}
 \description{
 Dataframe with past and future simulated global annual mean temperature
 }
