@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="RS-eco" />
+
+<meta name="date" content="2022-01-04" />
+
+<title>Extract country specific ISIMIP2b data</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Extract country specific ISIMIP2b data</h1>
+<h4 class="author">RS-eco</h4>
+<h4 class="date">2022-01-04</h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In this vignette we will describe how to extract ISIMIP climate, landuse and discharge data for a specific country, i.e. for Pakistan.</p>
+<p>First, we need to load the required packages. Specify a file directory, where the required ISIMIP2b data files are located and download the country outline of the country we are interested in.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rISIMIP) <span class="co"># Needs  to be installed from Github:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggmap2) <span class="co"># Needs to be installed from Github: </span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Set file directory of where</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>filedir <span class="ot">&lt;-</span> <span class="st">&quot;/media/matt/Data/Documents/Wissenschaft/Data/&quot;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify country</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>country <span class="ot">&lt;-</span> <span class="st">&quot;PAK&quot;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Get country outline of Pakistan</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>gadm <span class="ot">&lt;-</span> raster<span class="sc">::</span><span class="fu">getData</span>(<span class="at">name=</span><span class="st">&quot;GADM&quot;</span>, <span class="at">country=</span>country, <span class="at">level=</span><span class="dv">1</span>, <span class="at">path=</span><span class="fu">paste0</span>(filedir, <span class="st">&quot;/GADM&quot;</span>))</span></code></pre></div>
+<p><strong>Note:</strong> If you want to run the code for another country, you just have to change the ISO3 country code from “PAK” to the corresponding ISO3 code of the country you are interested in. The rest of this script does not have to be changed at all.</p>
+</div>
+<div id="ewembi-temperature" class="section level2">
+<h2>EWEMBI Temperature</h2>
+<p>ISIMIP2b provides model data for the past, present and future. Model data for the past and present is bias-corrected using observed climate data (EWEMBI). If you require present climate data I recommend to use the EWEMBI climate data directly, which is what we do in this section.</p>
+<p>We load all temperature files and mask and crop them by the extent of our country.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load EWEMBI Temperature data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tas_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path=</span>filedir, <span class="at">recursive=</span>T, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">pattern=</span><span class="st">&quot;tas_ewembi1_&quot;</span>, <span class="at">full.names =</span> T)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tas_gadm <span class="ot">&lt;-</span> <span class="fu">stack</span>(<span class="fu">lapply</span>(tas_files, <span class="cf">function</span>(x){</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  tas <span class="ot">&lt;-</span> raster<span class="sc">::</span><span class="fu">stack</span>(x)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mask</span>(<span class="fu">crop</span>(tas, gadm), gadm)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}))</span></code></pre></div>
+<p>Transform data into right units</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Convert temperature into degrees</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tas_gadm <span class="ot">&lt;-</span> raster<span class="sc">::</span><span class="fu">calc</span>(tas_gadm, <span class="at">fun=</span><span class="cf">function</span>(x){x<span class="fl">-273.15</span>})</span></code></pre></div>
+<p>Transform data into Equal Area/UTM Projection</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Universal UTM projection</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tas_gadm_utm <span class="ot">&lt;-</span> <span class="fu">projectRaster</span>(tas_gadm, <span class="at">to=</span><span class="st">&quot;+proj=laea +y_0=0 +lon_0=155 +lat_0=-90 +ellps=WGS84 +no_defs&quot;</span>)</span></code></pre></div>
+<p>Calculate 30-average and save to file</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set time information of raster</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>tas_gadm <span class="ot">&lt;-</span> <span class="fu">setZ</span>(tas_gadm, <span class="at">z=</span><span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&quot;1979-01-01&quot;</span>), <span class="fu">as.Date</span>(<span class="st">&quot;2013-12-31&quot;</span>), </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">by=</span><span class="dv">1</span>), <span class="at">name=</span><span class="st">&quot;date&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate 30-average (1980 - 2009) </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>tas_1995<span class="ot">&lt;-</span> <span class="fu">subset</span>(tas_gadm, <span class="fu">which</span>(<span class="fu">getZ</span>(tas_gadm) <span class="sc">&gt;=</span> <span class="fu">as.Date</span>(<span class="st">&#39;1980-01-01&#39;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">getZ</span>(tas_gadm) <span class="sc">&lt;=</span> <span class="fu">as.Date</span>(<span class="st">&quot;2009-12-31&quot;</span>)))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>tas_1995 <span class="ot">&lt;-</span> <span class="fu">calc</span>(tas_1995, mean, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<!-- tas_1995 is the 30-year average in temperature, for the global bioclimatic data we calculated the monthly 30-yr average. -->
+<p>Plot map of 30yr-average tas data</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot map of tas_1995</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">createMap</span>(<span class="at">data=</span>tas_1995, <span class="at">name=</span><span class="st">&quot;tmean&quot;</span>, <span class="at">outline=</span>gadm,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">width=</span><span class="dv">8</span>, <span class="at">height=</span><span class="dv">9</span>, <span class="at">units=</span><span class="st">&quot;in&quot;</span>, <span class="at">dpi=</span><span class="dv">300</span>)</span></code></pre></div>
+<p>Calculate wintering and breeding temperature</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wintering season (1st Nov - 31st Jan)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>tas_wintering <span class="ot">&lt;-</span> <span class="fu">subset</span>(tas_gadm, <span class="fu">which</span>(<span class="fu">month</span>(<span class="fu">getZ</span>(tas_gadm)) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">12</span>,<span class="dv">1</span>)))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Breeding season (1st April - 30th June)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tas_breeding <span class="ot">&lt;-</span> <span class="fu">subset</span>(tas_gadm, <span class="fu">which</span>(<span class="fu">month</span>(<span class="fu">getZ</span>(tas_gadm)) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>)))</span></code></pre></div>
+<p>Calculate mean temperature over time and save to file</p>
+<p><strong>Note:</strong> Takes a long time to run.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean temperature value over time</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ts_tas_gadm <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cellStats</span>(tas_gadm, <span class="at">stat=</span><span class="st">&#39;mean&#39;</span>, <span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ts_tas_gadm) <span class="ot">&lt;-</span> <span class="st">&quot;tmean&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ts_tas_gadm<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">getZ</span>(tas_gadm); <span class="fu">rm</span>(tas_gadm)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(ts_tas_gadm, <span class="st">&quot;ts_tas_gadm.csv&quot;</span>)</span></code></pre></div>
+<p>Load saved file and create plot of daily, monthly and annual mean temperature</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read file</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ts_tmean_gadm <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">paste0</span>(<span class="st">&quot;ts_tmean_&quot;</span>, country, <span class="st">&quot;.csv&quot;</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ts_tmean_gadm<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(ts_tmean_gadm<span class="sc">$</span>date)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate monthly and annual mean temperature</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>ts_tmean_gadm<span class="sc">$</span>month <span class="ot">&lt;-</span> <span class="fu">month</span>(ts_tmean_gadm<span class="sc">$</span>date)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>ts_tmean_gadm<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">year</span>(ts_tmean_gadm<span class="sc">$</span>date)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>ts_month <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(tmean <span class="sc">~</span> month <span class="sc">+</span> year, ts_tmean_gadm, mean)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ts_month<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as_date</span>(<span class="fu">paste</span>(<span class="st">&quot;15&quot;</span>, ts_month<span class="sc">$</span>month, ts_month<span class="sc">$</span>year), </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                         <span class="at">format=</span><span class="st">&quot;%d %m %Y&quot;</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>ts_year <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(tmean <span class="sc">~</span> year, ts_tmean_gadm, mean)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>ts_year<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as_date</span>(<span class="fu">paste</span>(<span class="st">&quot;15&quot;</span>, <span class="st">&quot;06&quot;</span>, ts_year<span class="sc">$</span>year), </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                        <span class="at">format=</span><span class="st">&quot;%d %m %Y&quot;</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot daily, monthly and annual mean temperature</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>ts_tmean_gadm, <span class="fu">aes</span>(<span class="at">x=</span>date, <span class="at">y=</span>tmean)) <span class="sc">+</span> </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&quot;gam&quot;</span>, <span class="at">se=</span><span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks=</span><span class="st">&quot;2 years&quot;</span>, <span class="at">date_labels =</span> <span class="st">&quot;%Y&quot;</span>, <span class="at">expand=</span><span class="fu">c</span>(<span class="fl">0.01</span>,<span class="dv">0</span>)) <span class="sc">+</span> </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Date&quot;</span>, <span class="at">y=</span><span class="st">&quot;Mean daily temperature (°C)&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>()  </span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>ts_month, <span class="fu">aes</span>(<span class="at">x=</span>date, <span class="at">y=</span>tmean)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&quot;gam&quot;</span>, <span class="at">se=</span><span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks=</span><span class="st">&quot;2 years&quot;</span>, <span class="at">date_labels =</span> <span class="st">&quot;%Y&quot;</span>, <span class="at">expand=</span><span class="fu">c</span>(<span class="fl">0.01</span>,<span class="dv">0</span>)) <span class="sc">+</span> </span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Date&quot;</span>, <span class="at">y=</span><span class="st">&quot;Mean monthly temperature (°C)&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>ts_year, <span class="fu">aes</span>(<span class="at">x=</span>date, <span class="at">y=</span>tmean)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&quot;gam&quot;</span>, <span class="at">se=</span><span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">date_breaks=</span><span class="st">&quot;2 years&quot;</span>, <span class="at">date_labels =</span> <span class="st">&quot;%Y&quot;</span>, <span class="at">expand=</span><span class="fu">c</span>(<span class="fl">0.01</span>,<span class="dv">0</span>),</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>               <span class="at">limits=</span><span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">&quot;1979-01-01&quot;</span>, <span class="st">&quot;2013-12-31&quot;</span>))) <span class="sc">+</span> </span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">19</span>,<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>), <span class="at">limits=</span><span class="fu">c</span>(<span class="dv">19</span>,<span class="dv">22</span>)) <span class="sc">+</span> </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Year&quot;</span>, <span class="at">y=</span><span class="st">&quot;Mean annual temperature (°C)&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> gridExtra<span class="sc">::</span><span class="fu">grid.arrange</span>(p1,p2,p3)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">paste0</span>(<span class="st">&quot;tmean_&quot;</span>, country, <span class="st">&quot;.png&quot;</span>), g, <span class="at">width=</span><span class="dv">10</span>, <span class="at">height=</span><span class="dv">8</span>, <span class="at">dpi=</span><span class="dv">300</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>ts_year, <span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>tmean)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span><span class="st">&quot;gam&quot;</span>, <span class="at">se=</span><span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">1979</span>,<span class="dv">2013</span>, <span class="at">by=</span><span class="dv">2</span>)) <span class="sc">+</span> </span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">c</span>(<span class="fl">19.5</span>,<span class="fl">20.0</span>, <span class="fl">20.5</span>, <span class="fl">21.0</span>, <span class="fl">21.5</span>)) <span class="sc">+</span> </span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Year&quot;</span>, <span class="at">y=</span><span class="st">&quot;Mean annual temperature (°C)&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>()</span></code></pre></div>
+</div>
+<div id="bioclim-data" class="section level2">
+<h2>Bioclim Data</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get ISIMIP2b bioclim data</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>bioclim_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP2b/DerivedInputData/GCM/landonly&quot;</span>), </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;bioclim_.*</span><span class="sc">\\</span><span class="st">.csv&quot;</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>, <span class="at">recursive=</span><span class="cn">TRUE</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>bioclim <span class="ot">&lt;-</span> <span class="fu">lapply</span>(bioclim_files, readr<span class="sc">::</span>read_csv)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Mask by country boundaries</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>bioclim  <span class="ot">&lt;-</span> <span class="fu">lapply</span>(bioclim, <span class="at">FUN=</span><span class="cf">function</span>(x){</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">rasterFromXYZ</span>(x)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">mask</span>(<span class="fu">crop</span>(data, gadm), gadm)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(data))</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y){</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(x, <span class="at">path=</span><span class="fu">gsub</span>(<span class="st">&quot;landonly&quot;</span>, country, y))</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>}, <span class="at">x=</span>bioclim, <span class="at">y=</span>bioclim_files)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; List ISIMIP2b bio files of country</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>bioclim_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(filedir, <span class="at">pattern=</span><span class="fu">paste0</span>(<span class="st">&quot;^bioclim_.*</span><span class="sc">\\</span><span class="st">_&quot;</span>, country, <span class="st">&quot;.csv&quot;</span>), <span class="at">recursive=</span><span class="cn">TRUE</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Read ISIMIP2b bio data of country and plot</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(bioclim_files, <span class="cf">function</span>(x){</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(x)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Plot bio1</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_raster</span>(<span class="at">data=</span>data, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>bio1)) <span class="sc">+</span> </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">colours=</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>, </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#7FFF7F&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>)) <span class="sc">+</span> </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_polygon</span>(<span class="at">data=</span>gadm, <span class="fu">aes</span>(<span class="at">x=</span>long, <span class="at">y=</span>lat, <span class="at">group=</span>group), </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill=</span><span class="cn">NA</span>, <span class="at">colour=</span><span class="st">&quot;black&quot;</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Save to file</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="fu">sub</span>(<span class="st">&quot;.csv&quot;</span>, <span class="st">&quot;.png&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;bioclim&quot;</span>, <span class="st">&quot;bio1&quot;</span>, x)), </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">dpi=</span><span class="dv">300</span>, <span class="at">width=</span><span class="dv">8</span>, <span class="at">height=</span><span class="dv">6</span>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="landuse-data" class="section level2">
+<h2>Landuse data</h2>
+<p>Read and summarise landuse data</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Landuse histsoc</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get and join data</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>histsoc <span class="ot">&lt;-</span> <span class="fu">append</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;histsoc&quot;</span>, <span class="at">var=</span><span class="st">&quot;totals&quot;</span>, <span class="at">startyear=</span><span class="dv">1861</span>, <span class="at">endyear=</span><span class="dv">2005</span>), <span class="fu">list</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;histsoc&quot;</span>, <span class="at">var=</span><span class="st">&quot;urbanareas&quot;</span>, <span class="at">startyear=</span><span class="dv">1861</span>, <span class="at">endyear=</span><span class="dv">2005</span>)))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(histsoc)[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="st">&quot;urbanareas&quot;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Crop and mask data</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>histsoc <span class="ot">&lt;-</span> <span class="fu">lapply</span>(histsoc, <span class="cf">function</span>(x) <span class="fu">mask</span>(<span class="fu">crop</span>(x, gadm), gadm))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Turn into dataframe</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>histsoc <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(histsoc), <span class="cf">function</span>(x){</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(histsoc[[x]])) <span class="sc">%&gt;%</span> tidyr<span class="sc">::</span><span class="fu">gather</span>(year, value, <span class="sc">-</span><span class="fu">c</span>(x,y))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(data)[<span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">names</span>(histsoc)[x]</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>histsoc <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="cf">function</span>(...) dplyr<span class="sc">::</span><span class="fu">left_join</span>(..., <span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;year&quot;</span>), <span class="at">all.x=</span><span class="cn">TRUE</span>), histsoc)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Turn years into numeric</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>histsoc<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;&quot;</span>, histsoc<span class="sc">$</span>year))</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(histsoc)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(histsoc, <span class="st">&quot;histsoc_landuse_pak.csv&quot;</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Landuse 2005soc</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Read and join data</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>soc2005 <span class="ot">&lt;-</span> <span class="fu">stack</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;2005soc&quot;</span>, <span class="at">var=</span><span class="st">&quot;totals&quot;</span>), <span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;2005soc&quot;</span>, <span class="at">var=</span><span class="st">&quot;urbanareas&quot;</span>))</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(soc2005) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;cropland_irrigated&quot;</span>, <span class="st">&quot;cropland_rainfed&quot;</span>, <span class="st">&quot;cropland_total&quot;</span>, <span class="st">&quot;pastures&quot;</span>, <span class="st">&quot;urbanareas&quot;</span>)</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Crop and mask data</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>soc2005 <span class="ot">&lt;-</span> <span class="fu">mask</span>(<span class="fu">crop</span>(soc2005, gadm), gadm)</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>soc2005 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(soc2005)) </span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(soc2005, <span class="st">&quot;2005soc_landuse_pak.csv&quot;</span>)</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="do">## Landuse RCP2.6</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Totals &amp; Urban data</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>rcp26 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;GFDL-ESM2M&quot;</span>, <span class="st">&quot;HadGEM2-ES&quot;</span>, <span class="st">&quot;IPSL-CM5A-LR&quot;</span>, <span class="st">&quot;MIROC5&quot;</span>), <span class="cf">function</span>(model){</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Read data</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">append</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;rcp26&quot;</span>, <span class="at">model=</span>model, <span class="at">var=</span><span class="st">&quot;totals&quot;</span>, <span class="at">startyear=</span><span class="dv">2006</span>, <span class="at">endyear=</span><span class="dv">2099</span>), <span class="fu">list</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;rcp26&quot;</span>, <span class="at">model=</span>model, <span class="at">var=</span><span class="st">&quot;urbanareas&quot;</span>, <span class="at">startyear=</span><span class="dv">2006</span>, <span class="at">endyear=</span><span class="dv">2099</span>)))</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(data)[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="st">&quot;urbanareas&quot;</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Crop data</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data, <span class="cf">function</span>(x) <span class="fu">mask</span>(<span class="fu">crop</span>(x, gadm), gadm))</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn into dataframe</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  colname <span class="ot">&lt;-</span> <span class="fu">names</span>(data)</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(data), <span class="cf">function</span>(x){</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(data[[x]])) <span class="sc">%&gt;%</span> tidyr<span class="sc">::</span><span class="fu">gather</span>(year, value, <span class="sc">-</span><span class="fu">c</span>(x,y))</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(data)[<span class="dv">4</span>] <span class="ot">&lt;-</span> colname[x]</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(data)</span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="cf">function</span>(...) dplyr<span class="sc">::</span><span class="fu">left_join</span>(..., <span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;year&quot;</span>), <span class="at">all.x=</span><span class="cn">TRUE</span>), data)</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn years into numeric</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;&quot;</span>, data<span class="sc">$</span>year))</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add model column</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>model <span class="ot">&lt;-</span> model</span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>rcp26 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, rcp26)</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(rcp26, <span class="st">&quot;rcp26soc_landuse_pak.csv&quot;</span>)</span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="do">## Landuse RCP6.0</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>rcp60 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;GFDL-ESM2M&quot;</span>, <span class="st">&quot;HadGEM2-ES&quot;</span>, <span class="st">&quot;IPSL-CM5A-LR&quot;</span>, <span class="st">&quot;MIROC5&quot;</span>), <span class="cf">function</span>(model){</span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Read data</span></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">append</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;rcp60&quot;</span>, <span class="at">model=</span>model, <span class="at">var=</span><span class="st">&quot;totals&quot;</span>, <span class="at">startyear=</span><span class="dv">2006</span>, <span class="at">endyear=</span><span class="dv">2099</span>), <span class="fu">list</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;rcp60&quot;</span>, <span class="at">model=</span>model, <span class="at">var=</span><span class="st">&quot;urbanareas&quot;</span>, <span class="at">startyear=</span><span class="dv">2006</span>, <span class="at">endyear=</span><span class="dv">2099</span>)))</span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(data)[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="st">&quot;urbanareas&quot;</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Crop data</span></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data, <span class="cf">function</span>(x) <span class="fu">mask</span>(<span class="fu">crop</span>(x, gadm), gadm))</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn into dataframe</span></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>  colname <span class="ot">&lt;-</span> <span class="fu">names</span>(data)</span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(data), <span class="cf">function</span>(x){</span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(data[[x]])) <span class="sc">%&gt;%</span> tidyr<span class="sc">::</span><span class="fu">gather</span>(year, value, <span class="sc">-</span><span class="fu">c</span>(x,y))</span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(data)[<span class="dv">4</span>] <span class="ot">&lt;-</span> colname[x]</span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(data)</span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="cf">function</span>(...) dplyr<span class="sc">::</span><span class="fu">left_join</span>(..., <span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;year&quot;</span>), <span class="at">all.x=</span><span class="cn">TRUE</span>), data)</span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn years into numeric</span></span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;&quot;</span>, data<span class="sc">$</span>year))</span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add model column</span></span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>model <span class="ot">&lt;-</span> model</span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>rcp60 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, rcp60)</span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file</span></span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(rcp60, <span class="st">&quot;rcp60soc_landuse_pak.csv&quot;</span>)</span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a><span class="do">## Landuse 2100RCP2.6</span></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>rcp26_2100 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;GFDL-ESM2M&quot;</span>, <span class="st">&quot;HadGEM2-ES&quot;</span>, <span class="st">&quot;IPSL-CM5A-LR&quot;</span>, <span class="st">&quot;MIROC5&quot;</span>), <span class="cf">function</span>(model){</span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Read data</span></span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">append</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;rcp26&quot;</span>, <span class="at">model=</span>model, <span class="at">var=</span><span class="st">&quot;totals&quot;</span>, <span class="at">startyear=</span><span class="dv">2100</span>, <span class="at">endyear=</span><span class="dv">2299</span>), <span class="fu">list</span>(<span class="fu">readISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">type=</span><span class="st">&quot;landuse&quot;</span>, <span class="at">scenario=</span><span class="st">&quot;rcp26&quot;</span>, <span class="at">model=</span>model, <span class="at">var=</span><span class="st">&quot;urbanareas&quot;</span>, <span class="at">startyear=</span><span class="dv">2100</span>, <span class="at">endyear=</span><span class="dv">2299</span>)))</span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(data)[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="st">&quot;urbanareas&quot;</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Crop data</span></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data, <span class="cf">function</span>(x) <span class="fu">mask</span>(<span class="fu">crop</span>(x, gadm), gadm))</span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn into dataframe</span></span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>  colname <span class="ot">&lt;-</span> <span class="fu">names</span>(data)</span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(data), <span class="cf">function</span>(x){</span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>    data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(data[[x]])) <span class="sc">%&gt;%</span> tidyr<span class="sc">::</span><span class="fu">gather</span>(year, value, <span class="sc">-</span><span class="fu">c</span>(x,y))</span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(data)[<span class="dv">4</span>] <span class="ot">&lt;-</span> colname[x]</span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(data)</span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="cf">function</span>(...) dplyr<span class="sc">::</span><span class="fu">left_join</span>(..., <span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;year&quot;</span>), <span class="at">all.x=</span><span class="cn">TRUE</span>), data)</span>
+<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn years into numeric</span></span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">sub</span>(<span class="st">&quot;X&quot;</span>, <span class="st">&quot;&quot;</span>, data<span class="sc">$</span>year))</span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add model column</span></span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>model <span class="ot">&lt;-</span> model</span>
+<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a>rcp26_2100 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, rcp26_2100)</span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file</span></span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(rcp26_2100, <span class="st">&quot;2100rcp26soc_landuse_pak.csv&quot;</span>)</span></code></pre></div>
+<div id="plot-land-use-data" class="section level3">
+<h3>Plot land use data</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggmap2)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggmap2</span>(totals_1985_df, <span class="at">name=</span><span class="st">&quot;% Cover&quot;</span>, <span class="at">subnames=</span><span class="fu">names</span>(crops5_1985), <span class="at">split=</span><span class="cn">FALSE</span>, <span class="at">ncol=</span><span class="dv">4</span>, <span class="at">width=</span><span class="dv">12</span>, <span class="at">height=</span><span class="dv">8</span>, <span class="at">units=</span><span class="st">&quot;in&quot;</span>, <span class="at">dpi=</span><span class="dv">100</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge historic and future data</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>totals_future_df</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>landuse_data <span class="ot">&lt;-</span> <span class="fu">rbind</span>(totals_1985_df, totals_future_df)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(totals_1985_df, totals_future_df)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create boxplot of the different scenarios</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_boxplot</span>(<span class="at">data=</span>landuse_data, </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>value, <span class="at">fill=</span>var, <span class="at">linetype=</span>scenario));<span class="fu">rm</span>(landuse_data)</span></code></pre></div>
+</div>
+</div>
+<div id="discharge-data" class="section level2">
+<h2>Discharge data</h2>
+<p>Several groups within the ISIMIP provide discharge data, however at the moment (August 2018) only mpi-hm provides discharge data for the past and future using three models.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Climate models</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;gfdl-esm2m&quot;</span>, <span class="st">&quot;ipsl-cm5a-lr&quot;</span>, <span class="st">&quot;miroc5&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Process discharge data</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(processNC)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>dist_list_pak <span class="ot">&lt;-</span> <span class="fu">lapply</span>(models, <span class="at">FUN=</span><span class="cf">function</span>(x){</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">#&#39; Load ISIMIP2b Discharge data</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  dis_global <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="fu">paste0</span>(<span class="st">&quot;E:/Data/ISIMIP2b/OutputData/mpi-hm/&quot;</span>, x),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                           <span class="at">pattern=</span><span class="st">&quot;dis_global&quot;</span>, <span class="at">full.names =</span> T)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  dis_picontrol_2005soc_2050 <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>dis_global[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">startyear=</span><span class="dv">2036</span>, <span class="at">extent=</span>gadm, <span class="at">endyear=</span><span class="dv">2065</span>, <span class="at">filename1=</span><span class="fu">paste0</span>(<span class="st">&quot;mpi-hm_&quot;</span>, x, <span class="st">&quot;_picontrol_2005soc_co2_dis_&quot;</span>, country, <span class="st">&quot;_monthly_2050.grd&quot;</span>), <span class="at">format=</span><span class="st">&quot;raster&quot;</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  dis_picontrol_2005soc_2080 <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>dis_global[<span class="dv">4</span><span class="sc">:</span><span class="dv">7</span>], <span class="at">startyear=</span><span class="dv">2066</span>, <span class="at">extent=</span>gadm, <span class="at">endyear=</span><span class="dv">2095</span>, <span class="at">filename1=</span><span class="fu">paste0</span>(<span class="st">&quot;mpi-hm_&quot;</span>, x, <span class="st">&quot;_picontrol_2005soc_co2_dis_&quot;</span>, country, <span class="st">&quot;_monthly_2080.grd&quot;</span>), <span class="at">format=</span><span class="st">&quot;raster&quot;</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  dis_picontrol_histsoc_1985 <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>dis_global[<span class="dv">8</span><span class="sc">:</span><span class="dv">11</span>], <span class="at">startyear=</span><span class="dv">1970</span>, <span class="at">extent=</span>gadm, <span class="at">endyear=</span><span class="dv">1999</span>, <span class="at">filename1=</span><span class="fu">paste0</span>(<span class="st">&quot;mpi-hm_&quot;</span>, x, <span class="st">&quot;_picontrol_histsoc_co2_dis_&quot;</span>, country, <span class="st">&quot;_monthly_1985.grd&quot;</span>), <span class="at">format=</span><span class="st">&quot;raster&quot;</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  dis_rcp26_2005soc_2050 <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>dis_global[<span class="dv">12</span><span class="sc">:</span><span class="dv">15</span>], <span class="at">startyear=</span><span class="dv">2036</span>, <span class="at">extent=</span>gadm, <span class="at">endyear=</span><span class="dv">2065</span>, <span class="at">filename1=</span><span class="fu">paste0</span>(<span class="st">&quot;mpi-hm_&quot;</span>, x, <span class="st">&quot;_rcp26_2005soc_co2_dis_&quot;</span>, country, <span class="st">&quot;_monthly_2050.grd&quot;</span>), <span class="at">format=</span><span class="st">&quot;raster&quot;</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  dis_rcp26_2005soc_2080 <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>dis_global[<span class="dv">15</span><span class="sc">:</span><span class="dv">18</span>], <span class="at">startyear=</span><span class="dv">2066</span>, <span class="at">extent=</span>gadm, <span class="at">endyear=</span><span class="dv">2095</span>, <span class="at">filename1=</span><span class="fu">paste0</span>(<span class="st">&quot;mpi-hm_&quot;</span>, x, <span class="st">&quot;_rcp26_2005soc_co2_dis_&quot;</span>, country, <span class="st">&quot;_monthly_2080.grd&quot;</span>), <span class="at">format=</span><span class="st">&quot;raster&quot;</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  dis_rcp60_2005soc_2050 <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>dis_global[<span class="dv">19</span><span class="sc">:</span><span class="dv">22</span>], <span class="at">startyear=</span><span class="dv">2036</span>, <span class="at">extent=</span>gadm, <span class="at">endyear=</span><span class="dv">2065</span>, <span class="at">filename1=</span><span class="fu">paste0</span>(<span class="st">&quot;mpi-hm_&quot;</span>, x, <span class="st">&quot;_rcp60_2005soc_co2_dis_&quot;</span>, country, <span class="st">&quot;_monthly_2050.grd&quot;</span>), <span class="at">format=</span><span class="st">&quot;raster&quot;</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  dis_rcp60_2005soc_2080 <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>dis_global[<span class="dv">22</span><span class="sc">:</span><span class="dv">25</span>], <span class="at">startyear=</span><span class="dv">2066</span>, <span class="at">extent=</span>gadm, <span class="at">endyear=</span><span class="dv">2095</span>, <span class="at">filename1=</span><span class="fu">paste0</span>(<span class="st">&quot;mpi-hm_&quot;</span>, x, <span class="st">&quot;_rcp60_2005soc_co2_dis_&quot;</span>, country, <span class="st">&quot;_monthly_2080.grd&quot;</span>), <span class="at">format=</span><span class="st">&quot;raster&quot;</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create list of files</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  dis_list <span class="ot">&lt;-</span> <span class="fu">list</span>(dis_picontrol_histsoc_1985, dis_picontrol_2005soc_2050, </span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                   dis_picontrol_2005soc_2080, dis_rcp26_2005soc_2050, </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                   dis_rcp26_2005soc_2080, dis_rcp60_2005soc_2050, </span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                   dis_rcp60_2005soc_2080)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate annual sum</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  dis_list_gadm <span class="ot">&lt;-</span> <span class="fu">stack</span>(<span class="fu">lapply</span>(dis_list, <span class="cf">function</span>(x) <span class="fu">calc</span>(x, sum)))</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(dis_list_gadm) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;picontrol_histsoc_1985&quot;</span>, <span class="st">&quot;picontrol_2005soc_2050&quot;</span>, </span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>                            <span class="st">&quot;picontrol_2005soc_2080&quot;</span>, <span class="st">&quot;rcp26_2005soc_2050&quot;</span>, </span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>                            <span class="st">&quot;rcp26_2005soc_2080&quot;</span>, <span class="st">&quot;rcp60_2005soc_2050&quot;</span>, </span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>                            <span class="st">&quot;rcp60_2005soc_2080&quot;</span>)</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  rasterVis<span class="sc">::</span><span class="fu">levelplot</span>(dis_list_gadm, <span class="at">par.settings=</span>rasterVis<span class="sc">::</span><span class="fu">rasterTheme</span>(<span class="at">region=</span><span class="fu">rev</span>(hexbin<span class="sc">::</span><span class="fu">BTC</span>(<span class="at">n=</span><span class="dv">9</span>))), </span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>                       <span class="at">layout=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">2</span>), <span class="at">main=</span><span class="st">&quot;Discharge&quot;</span>)</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dis_list_gadm)</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>Change format of discharge files</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>discharge_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">&quot;E:/Data/ISIMIP2b/DerivedOutputData/&quot;</span>, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">pattern=</span><span class="st">&quot;.grd&quot;</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(discharge_files), <span class="cf">function</span>(i){</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  discharge <span class="ot">&lt;-</span> <span class="fu">stack</span>(discharge_files[i])</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  discharge_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(discharge))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(discharge_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, month.abb)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_raster</span>(<span class="at">data=</span>discharge_df, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>Jul)) <span class="sc">+</span> </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">colours=</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#7FFF7F&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="fu">sub</span>(<span class="at">pattern=</span><span class="st">&quot;.grd&quot;</span>, <span class="st">&quot;.png&quot;</span>, discharge_files[i]), <span class="at">width=</span><span class="dv">8</span>, <span class="at">height=</span><span class="dv">6</span>, <span class="at">dpi=</span><span class="dv">300</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(discharge_df, <span class="fu">sub</span>(<span class="at">pattern=</span><span class="st">&quot;.grd&quot;</span>, <span class="st">&quot;.csv&quot;</span>, discharge_files[i]))</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(discharge_files)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">sub</span>(<span class="at">pattern=</span><span class="st">&quot;.grd&quot;</span>, <span class="st">&quot;.gri&quot;</span>, discharge_files))</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

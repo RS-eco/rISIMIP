@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="RS-eco" />
+
+<meta name="date" content="2022-01-04" />
+
+<title>Derive global landonly ISIMIP3b data</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Derive global landonly ISIMIP3b data</h1>
+<h4 class="author">RS-eco</h4>
+<h4 class="date">2022-01-04</h4>
+
+
+
+<div id="data-setup" class="section level2">
+<h2>Data Setup</h2>
+<p>Install rISIMIP package</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install remotes if not previously installed</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">&quot;remotes&quot;</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>]) <span class="fu">install.packages</span>(<span class="st">&quot;remotes&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install rISIMIP from Github if not previously installed</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">&quot;rISIMIP&quot;</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>]) remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;RS-eco/rISIMIP&quot;</span>)</span></code></pre></div>
+<p>Load rISIMIP package</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rISIMIP)</span></code></pre></div>
+<p>First, we specify the file path, where the ISIMIP2b data is located.</p>
+<p><strong>Note:</strong> The following script requires that you already have the ISIMIP2b bias-corrected GCM_atmosphere data on your local harddrive.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify path of file directory</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>filedir <span class="ot">&lt;-</span> <span class="st">&quot;I:/&quot;</span></span></code></pre></div>
+</div>
+<div id="summarise-climate-data" class="section level2">
+<h2>Summarise climate data</h2>
+<p>First, we need the <code>summariseNC</code> function from the <code>processNC</code> package. Thus, we have to install the processNC package from Github.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install processNC from Github if not previously installed</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">&quot;processNC&quot;</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="st">&quot;Package&quot;</span>]) remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;RS-eco/processNC&quot;</span>)</span></code></pre></div>
+<p>Load processNC package</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(processNC)</span></code></pre></div>
+<p>We now list and summarise the climate data for the required time steps (1980-2009, 2036-2065, 2066-2095) for each variable and each model using global ISIMIP2b data.</p>
+</div>
+<div id="certain-years" class="section level2">
+<h2>Certain years</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Timeframes</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>timeframe <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;1995&quot;</span>,<span class="st">&quot;2000&quot;</span>,<span class="st">&quot;2005&quot;</span>,<span class="st">&quot;2050&quot;</span>,<span class="st">&quot;2080&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>startyear <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1980</span>,<span class="dv">1985</span>,<span class="dv">1990</span>,<span class="dv">2036</span>,<span class="dv">2066</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>endyear <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2009</span>,<span class="dv">2014</span>,<span class="dv">2019</span>,<span class="dv">2065</span>,<span class="dv">2095</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>timeperiods <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">timeframe=</span>timeframe, <span class="at">startyear=</span>startyear,<span class="at">endyear=</span>endyear)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Climate variables</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pr&quot;</span>, <span class="st">&quot;tasmax&quot;</span>, <span class="st">&quot;tasmin&quot;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Climate models</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;GFDL-ESM4&quot;</span>, <span class="st">&quot;IPSL-CM6A-LR&quot;</span>, <span class="st">&quot;MPI-ESM1-2-HR&quot;</span>, <span class="st">&quot;MRI-ESM2-0&quot;</span>, <span class="st">&quot;UKESM1-0-LL&quot;</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#SSP scenarios</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>ssps <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ssp126&quot;</span>, <span class="st">&quot;ssp370&quot;</span>, <span class="st">&quot;ssp585&quot;</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#Create list of variable, climate model and time frame combination</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>var_mod_time <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">var =</span> vars, <span class="at">model =</span> models, </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>                            <span class="at">timeframe =</span> timeframe[<span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">ssp =</span> ssps)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Add historical scenario</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">ssp=</span><span class="st">&quot;historical&quot;</span>, <span class="at">var=</span>vars, <span class="at">model=</span>models, <span class="at">timeframe =</span> <span class="fu">c</span>(<span class="st">&quot;1995&quot;</span>, <span class="st">&quot;2000&quot;</span>))</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>var_mod_time <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df, var_mod_time)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Add GSWP3-W5E5 scenario</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">ssp=</span><span class="st">&quot;obsclim&quot;</span>, <span class="at">var=</span>vars, <span class="at">model=</span><span class="st">&quot;GSWP3-W5E5&quot;</span>, <span class="at">timeframe=</span><span class="fu">c</span>(<span class="st">&quot;1995&quot;</span>, <span class="st">&quot;2000&quot;</span>, <span class="st">&quot;2005&quot;</span>))</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>var_mod_time <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df, var_mod_time)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(vars, models, timeframe, ssps)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>var_mod_time <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">left_join</span>(var_mod_time, timeperiods, <span class="at">by=</span><span class="st">&quot;timeframe&quot;</span>); <span class="fu">rm</span>(timeperiods)</span></code></pre></div>
+</div>
+<div id="slow-method" class="section level2">
+<h2>Slow method</h2>
+<p><strong>Note:</strong> Be aware that the following code chunk will take a very long time to run, even on a high-performance computer. A faster method is shown in the global-landonly vignette, however this approach requires the Climate Data Operators programme installed on your computer.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create output directory</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/global/&quot;</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run summariseNC for all combinations</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(var_mod_time), <span class="at">FUN=</span><span class="cf">function</span>(x){</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  files <span class="ot">&lt;-</span> <span class="fu">listISIMIP</span>(<span class="at">path=</span>filedir, <span class="at">var=</span>var_mod_time<span class="sc">$</span>var[x], <span class="at">extent=</span><span class="st">&quot;global&quot;</span>, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">model=</span>var_mod_time<span class="sc">$</span>model[x], <span class="at">version=</span><span class="st">&quot;ISIMIP3b&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">scenario=</span>var_mod_time<span class="sc">$</span>ssp[x], <span class="at">type=</span><span class="st">&quot;GCM&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">startyear=</span>var_mod_time<span class="sc">$</span>startyear[x], </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">endyear=</span>var_mod_time<span class="sc">$</span>endyear[x])</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  filename1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/global/&quot;</span>, </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                      var_mod_time<span class="sc">$</span>ssp[x], <span class="st">&quot;/monthly_&quot;</span>, </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                      var_mod_time<span class="sc">$</span>var[x], <span class="st">&quot;_&quot;</span>, var_mod_time<span class="sc">$</span>model[x], <span class="st">&quot;_&quot;</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                      var_mod_time<span class="sc">$</span>ssp[x], <span class="st">&quot;_&quot;</span>, var_mod_time<span class="sc">$</span>timeframe[x], </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;.nc&quot;</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(files)<span class="sc">==</span><span class="dv">4</span>){</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(filename1)){</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>      data_sub <span class="ot">&lt;-</span> <span class="fu">summariseNC</span>(<span class="at">files=</span>files, </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                              <span class="at">startdate=</span>var_mod_time<span class="sc">$</span>startyear[x], </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                              <span class="at">enddate=</span>var_mod_time<span class="sc">$</span>endyear[x],</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                              <span class="at">cores=</span><span class="fu">round</span>(<span class="fl">0.75</span><span class="sc">*</span>parallel<span class="sc">::</span><span class="fu">detectCores</span>()),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                              <span class="at">filename1=</span>filename1, <span class="at">overwrite=</span><span class="cn">FALSE</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">round</span>(x<span class="sc">/</span><span class="fu">nrow</span>(var_mod_time)<span class="sc">*</span><span class="dv">100</span>,<span class="dv">2</span>))</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="transform-climate-data" class="section level2">
+<h2>Transform climate data</h2>
+<p>First, we make a list of the newly created files:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#List all tasmin and tasmax files</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>tmin_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/global/&quot;</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;monthly_tasmin_.*</span><span class="sc">\\</span><span class="st">.nc&quot;</span>, <span class="at">full.names=</span>T, <span class="at">recursive=</span>T)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>tmax_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/global/&quot;</span>), </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;monthly_tasmax_.*</span><span class="sc">\\</span><span class="st">.nc&quot;</span>, <span class="at">full.names=</span>T, <span class="at">recursive=</span>T)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># List precipitation files</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>prec_files <span class="ot">&lt;-</span>  <span class="fu">list.files</span>(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/global/&quot;</span>),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;monthly_pr_.*</span><span class="sc">\\</span><span class="st">.nc&quot;</span>, <span class="at">full.names=</span>T, <span class="at">recursive=</span>T)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Select certain years</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>years <span class="ot">&lt;-</span> <span class="fu">unique</span>(var_mod_time<span class="sc">$</span>timeframe)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>tmin_files <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(years, <span class="cf">function</span>(x) tmin_files[<span class="fu">grep</span>(tmin_files, <span class="at">pattern=</span>x)]))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>tmax_files <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(years, <span class="cf">function</span>(x) tmax_files[<span class="fu">grep</span>(tmax_files, <span class="at">pattern=</span>x)]))</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>prec_files <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(years, <span class="cf">function</span>(x) prec_files[<span class="fu">grep</span>(prec_files, <span class="at">pattern=</span>x)]))</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tmin_files); <span class="fu">tail</span>(tmin_files); <span class="fu">length</span>(tmin_files)</span></code></pre></div>
+<pre><code>character(0)</code></pre>
+<pre><code>character(0)</code></pre>
+<pre><code>[1] 0</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check tmin, tmax and prec files are identical, </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#not just same number of files</span></span></code></pre></div>
+<div id="subset-data" class="section level3">
+<h3>Subset data</h3>
+<p>We want to get global data, but for land only:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read landonly mask</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;landseamask_generic&quot;</span>, <span class="at">package=</span><span class="st">&quot;rISIMIP&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mask data by landonly mask</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>tmin_lo <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tmin_files, <span class="at">FUN=</span><span class="cf">function</span>(x) <span class="fu">mask</span>(<span class="fu">stack</span>(x), landseamask_generic))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>tmax_lo <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tmax_files, <span class="at">FUN=</span><span class="cf">function</span>(x) <span class="fu">mask</span>(<span class="fu">stack</span>(x), landseamask_generic))</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>prec_lo <span class="ot">&lt;-</span> <span class="fu">lapply</span>(prec_files, <span class="at">FUN=</span><span class="cf">function</span>(x) <span class="fu">mask</span>(<span class="fu">stack</span>(x), landseamask_generic))</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tmin_lo[[<span class="dv">5</span>]])</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tmax_lo[[<span class="dv">5</span>]])</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(prec_lo[[<span class="dv">5</span>]])</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge lists into one list</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>data_lo <span class="ot">&lt;-</span> <span class="fu">c</span>(tmin_lo, tmax_lo, prec_lo)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>data_files <span class="ot">&lt;-</span> <span class="fu">c</span>(tmin_files, tmax_files, prec_files)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Output directories</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/landonly/&quot;</span>, <span class="fu">c</span>(<span class="st">&quot;historical&quot;</span>, <span class="st">&quot;obsclim&quot;</span>, <span class="st">&quot;ssp126&quot;</span>, <span class="st">&quot;ssp370&quot;</span>, <span class="st">&quot;ssp585&quot;</span>))</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Save to file in landonly subfolder</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y){</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  filename <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;.nc&quot;</span>, <span class="st">&quot;_landonly.nc&quot;</span>, <span class="fu">gsub</span>(<span class="st">&quot;global&quot;</span>, <span class="st">&quot;landonly&quot;</span>, y))</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(filename)){</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">stack</span>(x)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">#x &lt;- as.data.frame(rasterToPoints(x))</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">#colnames(x) &lt;- c(&quot;x&quot;, &quot;y&quot;, month.abb)</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    raster<span class="sc">::</span><span class="fu">writeRaster</span>(x, <span class="at">filename=</span>filename, <span class="at">format=</span><span class="st">&quot;CDF&quot;</span>,</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                        <span class="at">xname=</span><span class="st">&quot;lon&quot;</span>, <span class="at">yname=</span><span class="st">&quot;lat&quot;</span>, <span class="at">zname=</span><span class="st">&quot;time&quot;</span>, </span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                        <span class="at">zunit=</span><span class="st">&quot;years since 1661-1-1 00:00:00&quot;</span>,</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>                        <span class="at">force_v4=</span><span class="cn">TRUE</span>, <span class="at">compression=</span><span class="dv">9</span>)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>}, <span class="at">x=</span>data_lo, <span class="at">y=</span>data_files)</span></code></pre></div>
+<div id="change-units" class="section level4">
+<h4>Change units</h4>
+<p>The climate data comes in non-standard units. Temperature is in Kelvin and needs to be converted to degree Celsius, while precipitation was originally in kg m-2 s-1 and needs to be converted to kg m-2 day-1, which equals mm per day.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Turn climate data into right units (degree Celsius and mm)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Convert temperature from Kelvin to degree Celsius</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>tmin_lo <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tmin_lo, <span class="at">FUN=</span><span class="cf">function</span>(x){</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  raster<span class="sc">::</span><span class="fu">calc</span>(x, <span class="at">fun=</span><span class="cf">function</span>(x){x<span class="fl">-273.15</span>})</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>tmax_lo <span class="ot">&lt;-</span> <span class="fu">lapply</span>(tmax_lo, <span class="at">FUN=</span><span class="cf">function</span>(x){</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  raster<span class="sc">::</span><span class="fu">calc</span>(x, <span class="at">fun=</span><span class="cf">function</span>(x){x<span class="fl">-273.15</span>})</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert precipitation from kg m-2 s-1 to kg m-2 day-1</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>prec_lo <span class="ot">&lt;-</span> <span class="fu">lapply</span>(prec_lo, <span class="at">FUN=</span><span class="cf">function</span>(x){</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  raster<span class="sc">::</span><span class="fu">calc</span>(x, <span class="at">fun=</span><span class="cf">function</span>(x){x<span class="sc">*</span><span class="dv">86400</span>})</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tmin_lo[[<span class="dv">1</span>]][[<span class="dv">1</span>]])</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tmax_lo[[<span class="dv">1</span>]][[<span class="dv">1</span>]])</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(prec_lo[[<span class="dv">1</span>]][[<span class="dv">1</span>]])</span></code></pre></div>
+</div>
+</div>
+<div id="calculate-bioclim-variables" class="section level3">
+<h3>Calculate Bioclim variables</h3>
+<p>From the resulting layers, we can now calculate the Bioclimatic variables, using the biovars function in the dismo package.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create list with bioclim names</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>bioclim_names <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="at">x =</span> prec_files, <span class="at">pattern =</span> <span class="st">&quot;</span><span class="sc">\\</span><span class="st">monthly_pr&quot;</span>, </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">replacement =</span> <span class="st">&quot;bioclim&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>bioclim_names <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;.nc&quot;</span>, <span class="st">&quot;_landonly.nc&quot;</span>, </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">gsub</span>(<span class="st">&quot;global&quot;</span>, <span class="st">&quot;landonly&quot;</span>, bioclim_names))</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate bioclim variables for all models and time frames and save to file</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>bioclim <span class="ot">&lt;-</span> <span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y,z,name){</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(name)){</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    bio <span class="ot">&lt;-</span> dismo<span class="sc">::</span><span class="fu">biovars</span>(<span class="at">tmin=</span>x, <span class="at">tmax=</span>y, <span class="at">prec=</span>z)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    raster<span class="sc">::</span><span class="fu">writeRaster</span>(bio, <span class="at">filename=</span>name, <span class="at">format=</span><span class="st">&quot;CDF&quot;</span>, </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                        <span class="at">xname=</span><span class="st">&quot;lon&quot;</span>, <span class="at">yname=</span><span class="st">&quot;lat&quot;</span>, <span class="at">zname=</span><span class="st">&quot;time&quot;</span>, </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                        <span class="at">zunit=</span><span class="st">&quot;years since 1661-1-1 00:00:00&quot;</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                        <span class="at">force_v4=</span><span class="cn">TRUE</span>, <span class="at">compression=</span><span class="dv">9</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>}, <span class="at">x=</span>tmin_lo, <span class="at">y=</span>tmax_lo, <span class="at">z=</span>prec_lo, <span class="at">name=</span>bioclim_names)</span></code></pre></div>
+<p>Now, we can list the previously calculated bioclim files</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bioclim_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/landonly&quot;</span>),</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;bioclim_.*</span><span class="sc">\\</span><span class="st">.nc&quot;</span>, <span class="at">full.names=</span>T, <span class="at">recursive=</span>T)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>bioclim <span class="ot">&lt;-</span> <span class="fu">lapply</span>(bioclim_files, raster<span class="sc">::</span>stack)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Need to implement bioclim_names here!</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#bioclim_names </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># List internal bioclim files</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">#(bioclim_files &lt;- list.files(&quot;data&quot;, pattern=&quot;bioclim_.*\\landonly.rda&quot;, </span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                            full.names=T, recursive=T))</span></span></code></pre></div>
+</div>
+</div>
+<div id="data-visualisation" class="section level2">
+<h2>Data visualisation</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster); <span class="fu">library</span>(readr); <span class="fu">library</span>(ggplot2)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>tmin_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="fu">paste0</span>(filedir, <span class="st">&quot;ISIMIP3b/DerivedInputData/GCM/landonly&quot;</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">pattern=</span><span class="st">&quot;monthly_tasmin_.*</span><span class="sc">\\</span><span class="st">.nc&quot;</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>, <span class="at">recursive=</span>T)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(tmin_files)){</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  tasmin <span class="ot">&lt;-</span> <span class="fu">stack</span>(tmin_files[i])</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  tasmin_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(tasmin))</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(tasmin_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, month.abb)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_raster</span>(<span class="at">data=</span>tasmin_df, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>Jul)) <span class="sc">+</span> </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">colours=</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#7FFF7F&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>))</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="fu">sub</span>(<span class="at">pattern=</span><span class="st">&quot;.nc&quot;</span>, <span class="st">&quot;.png&quot;</span>, tmax_files[i]))</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(tasmin_df, <span class="fu">sub</span>(<span class="at">pattern=</span><span class="st">&quot;.nc&quot;</span>, <span class="st">&quot;.csv.xz&quot;</span>, tmax_files[i]))</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>bioclim_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="fu">paste0</span>(filedir, <span class="st">&quot;ISIMIP3b/DerivedInputData/GCM/landonly&quot;</span>),</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pattern=</span><span class="st">&quot;bioclim_.*</span><span class="sc">\\</span><span class="st">.nc&quot;</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>, <span class="at">recursive=</span>T)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(bioclim_files)){</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  bioclim <span class="ot">&lt;-</span> <span class="fu">stack</span>(bioclim_files[i])</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  bioclim_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">rasterToPoints</span>(bioclim))</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(bioclim_df) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="fu">paste0</span>(<span class="st">&quot;bio&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">19</span>))</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_tile</span>(<span class="at">data=</span>bioclim_df, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>bio5)) <span class="sc">+</span> </span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">colours=</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>,</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#7FFF7F&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>)) <span class="sc">+</span> </span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>()</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="fu">sub</span>(<span class="at">pattern=</span><span class="st">&quot;.nc&quot;</span>, <span class="st">&quot;.png&quot;</span>, bioclim_files[i]))</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_csv</span>(bioclim_df, <span class="fu">sub</span>(<span class="at">pattern=</span><span class="st">&quot;.nc&quot;</span>, <span class="st">&quot;.csv.xz&quot;</span>, bioclim_files[i]))</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="plot-change-in-climate" class="section level2">
+<h2>Plot change in climate</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>bioclim_1995 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">list.files</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/landonly&quot;</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;bioclim_GSWP3-W5E5_obsclim_1995.*</span><span class="sc">\\</span><span class="st">.csv.xz&quot;</span>, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">full.names=</span>T, <span class="at">recursive=</span>T))[,<span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;bio4&quot;</span>, <span class="st">&quot;bio5&quot;</span>, <span class="st">&quot;bio12&quot;</span>, <span class="st">&quot;bio15&quot;</span>, <span class="st">&quot;bio18&quot;</span>, <span class="st">&quot;bio19&quot;</span>)]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>bioclim_1995<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="dv">1995</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>bioclim_1995 <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">gather</span>(bioclim_1995, var, value, <span class="sc">-</span><span class="fu">c</span>(x,y,year))</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>bioclim_1995 <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">spread</span>(bioclim_1995, year, value)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>bioclim_fut <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">list.files</span>(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/landonly&quot;</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;bioclim_.*2050.*</span><span class="sc">\\</span><span class="st">.csv.xz&quot;</span>, <span class="at">full.names=</span>T, <span class="at">recursive=</span>T), <span class="fu">list.files</span>(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP3b/DerivedInputData/GCM/landonly&quot;</span>),</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern=</span><span class="st">&quot;bioclim_.*2080.*</span><span class="sc">\\</span><span class="st">.csv.xz&quot;</span>, <span class="at">full.names=</span>T, <span class="at">recursive=</span>T))</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>bioclim_fut <span class="ot">&lt;-</span> <span class="fu">lapply</span>(bioclim_fut, <span class="cf">function</span>(x){</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(x)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(<span class="fu">basename</span>(x), <span class="at">split=</span><span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">4</span>]</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>model <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(<span class="fu">basename</span>(x), <span class="at">split=</span><span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">2</span>]</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  data<span class="sc">$</span>scenario <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(<span class="fu">basename</span>(x), <span class="at">split=</span><span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>bioclim_fut <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, bioclim_fut)</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr); <span class="fu">library</span>(ggplot2); <span class="fu">library</span>(patchwork)</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>bioclim_fut <span class="ot">&lt;-</span> bioclim_fut <span class="sc">%&gt;%</span> </span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">c</span>(x,y,model,scenario,year,bio4,bio5,bio12,bio15,bio18,bio19))</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>bioclim_fut <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">gather</span>(bioclim_fut, var, value, <span class="sc">-</span><span class="fu">c</span>(x,y,model,scenario,year))</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>bioclim_fut <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">spread</span>(bioclim_fut, year, value)</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate delta climate</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>bioclim_all <span class="ot">&lt;-</span> <span class="fu">left_join</span>(bioclim_fut, bioclim_1995, <span class="at">by=</span><span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;var&quot;</span>))</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>delta_climate <span class="ot">&lt;-</span> bioclim_all <span class="sc">%&gt;%</span> </span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">vars</span>(<span class="st">`</span><span class="at">2050</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">2080</span><span class="st">`</span>), <span class="fu">list</span>(<span class="sc">~</span>.<span class="sc">-</span>bioclim_all<span class="sc">$</span><span class="st">`</span><span class="at">1995</span><span class="st">`</span>)) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">`</span><span class="at">1995</span><span class="st">`</span>))</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>delta_climate <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">gather</span>(delta_climate, year, value, <span class="sc">-</span><span class="fu">c</span>(x,y,model,scenario,var))</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>delta_climate <span class="ot">&lt;-</span> delta_climate <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(x,y,scenario,var, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">value=</span><span class="fu">mean</span>(value, <span class="at">na.rm=</span><span class="cn">TRUE</span>))</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a><span class="co">#Subset data for plotting</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;2050&quot;</span>, <span class="st">&quot;2080&quot;</span>), <span class="cf">function</span>(x){</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>  climate <span class="ot">&lt;-</span> delta_climate[delta_climate<span class="sc">$</span>year <span class="sc">==</span> x,]</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>  climate <span class="ot">&lt;-</span> climate <span class="sc">%&gt;%</span> tidyr<span class="sc">::</span><span class="fu">unite</span>(year, scenario, <span class="at">col=</span><span class="st">&quot;time_rcp&quot;</span>)</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>  climate<span class="sc">$</span>time_rcp <span class="ot">&lt;-</span> <span class="fu">factor</span>(climate<span class="sc">$</span>time_rcp, <span class="at">labels=</span><span class="fu">c</span>(<span class="fu">paste0</span>(x, <span class="st">&quot; ssp126&quot;</span>), </span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>                                                        <span class="fu">paste0</span>(x, <span class="st">&quot; ssp370&quot;</span>),</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>                                                        <span class="fu">paste0</span>(x, <span class="st">&quot; ssp585&quot;</span>)))</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data</span>(outline, <span class="at">package=</span><span class="st">&quot;ggmap2&quot;</span>)</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>  p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_raster</span>(<span class="at">data=</span>climate[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio4&quot;</span>,], <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>value)) <span class="sc">+</span> </span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> time_rcp, <span class="at">ncol=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data=</span>outline, <span class="at">fill=</span><span class="st">&quot;transparent&quot;</span>, <span class="at">colour=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">name=</span><span class="st">&quot;Temperature </span><span class="sc">\n</span><span class="st">seasonality&quot;</span>, <span class="at">colours=</span><span class="fu">rev</span>(<span class="fu">colorRampPalette</span>(</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>)), <span class="at">values=</span>scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="fu">min</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio4&quot;</span>]), <span class="dv">0</span>, <span class="at">length=</span><span class="dv">5</span>), <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio4&quot;</span>]), <span class="at">length=</span><span class="dv">5</span>)))), <span class="at">na.value=</span><span class="st">&quot;transparent&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(), <span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>                            <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>                            <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>, </span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>, <span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>                            <span class="at">rect =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_sf</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>,<span class="dv">85</span>), <span class="at">expand=</span><span class="cn">FALSE</span>)</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_raster</span>(<span class="at">data=</span>climate[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio12&quot;</span>,], <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>value)) <span class="sc">+</span> </span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> time_rcp, <span class="at">ncol=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data=</span>outline, <span class="at">fill=</span><span class="st">&quot;transparent&quot;</span>, <span class="at">colour=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">name=</span><span class="st">&quot;Annual </span><span class="sc">\n</span><span class="st">precipitation&quot;</span>, <span class="at">colours=</span><span class="fu">colorRampPalette</span>(</span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>),</span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>      <span class="at">values=</span>scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="fu">min</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio12&quot;</span>]), </span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>                                          <span class="dv">0</span>, <span class="at">length=</span><span class="dv">5</span>), <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio12&quot;</span>]), <span class="at">length=</span><span class="dv">5</span>)))), <span class="at">na.value=</span><span class="st">&quot;transparent&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(),<span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>                            <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>                            <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>, </span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a>                            <span class="at">rect =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_sf</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>,<span class="dv">85</span>), <span class="at">expand=</span><span class="cn">FALSE</span>)</span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_raster</span>(<span class="at">data=</span>climate[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio19&quot;</span>,], <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>value)) <span class="sc">+</span> </span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> time_rcp, <span class="at">ncol=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb18-80"><a href="#cb18-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data=</span>outline, <span class="at">fill=</span><span class="st">&quot;transparent&quot;</span>, <span class="at">colour=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb18-81"><a href="#cb18-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">name=</span><span class="st">&quot;Precipitation </span><span class="sc">\n</span><span class="st">of coldest </span><span class="sc">\n</span><span class="st">quarter&quot;</span>, </span>
+<span id="cb18-82"><a href="#cb18-82" aria-hidden="true" tabindex="-1"></a>                         <span class="at">colours=</span><span class="fu">colorRampPalette</span>(</span>
+<span id="cb18-83"><a href="#cb18-83" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb18-84"><a href="#cb18-84" aria-hidden="true" tabindex="-1"></a>                             <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>), <span class="at">values=</span>scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="fu">min</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio19&quot;</span>]), <span class="dv">0</span>, <span class="at">length=</span><span class="dv">5</span>), <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio19&quot;</span>]), <span class="at">length=</span><span class="dv">5</span>)))), <span class="at">na.value=</span><span class="st">&quot;transparent&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-85"><a href="#cb18-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(),<span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-86"><a href="#cb18-86" aria-hidden="true" tabindex="-1"></a>                            <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-87"><a href="#cb18-87" aria-hidden="true" tabindex="-1"></a>                            <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-88"><a href="#cb18-88" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-89"><a href="#cb18-89" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>, <span class="at">strip.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb18-90"><a href="#cb18-90" aria-hidden="true" tabindex="-1"></a>                            <span class="at">rect =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb18-91"><a href="#cb18-91" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_sf</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>,<span class="dv">85</span>), <span class="at">expand=</span><span class="cn">FALSE</span>)</span>
+<span id="cb18-92"><a href="#cb18-92" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-93"><a href="#cb18-93" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn plots into grob elements</span></span>
+<span id="cb18-94"><a href="#cb18-94" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> p1 <span class="sc">/</span> p2 <span class="sc">/</span> p3 </span>
+<span id="cb18-95"><a href="#cb18-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="at">filename=</span><span class="fu">paste0</span>(<span class="st">&quot;figures/top_clim_change_&quot;</span>, x, <span class="st">&quot;.png&quot;</span>), p, </span>
+<span id="cb18-96"><a href="#cb18-96" aria-hidden="true" tabindex="-1"></a>         <span class="at">width=</span><span class="dv">14</span>, <span class="at">height=</span><span class="dv">6</span>, <span class="at">unit=</span><span class="st">&quot;in&quot;</span>, <span class="at">dpi=</span><span class="dv">600</span>)</span>
+<span id="cb18-97"><a href="#cb18-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb18-98"><a href="#cb18-98" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;2050&quot;</span>, <span class="st">&quot;2080&quot;</span>), <span class="cf">function</span>(time){</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  climate <span class="ot">&lt;-</span> delta_climate[delta_climate<span class="sc">$</span>year <span class="sc">==</span> time,]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  climate <span class="ot">&lt;-</span> climate <span class="sc">%&gt;%</span> tidyr<span class="sc">::</span><span class="fu">unite</span>(year, scenario, <span class="at">col=</span><span class="st">&quot;time_rcp&quot;</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  climate<span class="sc">$</span>time_rcp <span class="ot">&lt;-</span> <span class="fu">factor</span>(climate<span class="sc">$</span>time_rcp, <span class="at">labels=</span><span class="fu">c</span>(<span class="fu">paste0</span>(time, <span class="st">&quot; ssp126&quot;</span>), </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                                                        <span class="fu">paste0</span>(time, <span class="st">&quot; ssp370&quot;</span>),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                                                        <span class="fu">paste0</span>(time, <span class="st">&quot; ssp585&quot;</span>)))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data</span>(outline, <span class="at">package=</span><span class="st">&quot;ggmap2&quot;</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>   p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_raster</span>(<span class="at">data=</span>climate[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio5&quot;</span>,], <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>value)) <span class="sc">+</span> </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> time_rcp, <span class="at">ncol=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data=</span>outline,<span class="at">fill=</span><span class="st">&quot;transparent&quot;</span>, <span class="at">colour=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">name=</span><span class="st">&quot;Maximum </span><span class="sc">\n</span><span class="st">temperature&quot;</span>, <span class="at">colours=</span><span class="fu">rev</span>(<span class="fu">colorRampPalette</span>(</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>)),</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">values=</span>scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="fu">min</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio5&quot;</span>]), <span class="dv">0</span>, <span class="at">length=</span><span class="dv">5</span>), </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                                      <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio5&quot;</span>]), <span class="at">length=</span><span class="dv">5</span>)))), </span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.value=</span><span class="st">&quot;transparent&quot;</span>) <span class="sc">+</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(),<span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>                            <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                            <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(), <span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>, </span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>, <span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>                            <span class="at">rect =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_sf</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>,<span class="dv">85</span>), <span class="at">expand=</span><span class="cn">FALSE</span>)</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_raster</span>(<span class="at">data=</span>climate[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio15&quot;</span>,], <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>value)) <span class="sc">+</span> </span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> time_rcp, <span class="at">ncol=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data=</span>outline, <span class="at">fill=</span><span class="st">&quot;transparent&quot;</span>, <span class="at">colour=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">name=</span><span class="st">&quot;Precipitation </span><span class="sc">\n</span><span class="st">seasonality&quot;</span>, <span class="at">colours=</span><span class="fu">colorRampPalette</span>(</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>), <span class="at">values=</span>scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="fu">min</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio15&quot;</span>]), <span class="dv">0</span>, <span class="at">length=</span><span class="dv">5</span>), <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio15&quot;</span>]), <span class="at">length=</span><span class="dv">5</span>)))), <span class="at">na.value=</span><span class="st">&quot;transparent&quot;</span>) <span class="sc">+</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(),<span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>                            <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>                            <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(), <span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>, <span class="at">strip.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>                            <span class="at">rect =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_sf</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>,<span class="dv">85</span>), <span class="at">expand=</span><span class="cn">FALSE</span>)</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_raster</span>(<span class="at">data=</span>climate[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio18&quot;</span>,], <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">fill=</span>value)) <span class="sc">+</span> </span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> time_rcp, <span class="at">ncol=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">data=</span>outline, <span class="at">fill=</span><span class="st">&quot;transparent&quot;</span>, <span class="at">colour=</span><span class="st">&quot;black&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradientn</span>(<span class="at">name=</span><span class="st">&quot;Precipitation </span><span class="sc">\n</span><span class="st">of warmest </span><span class="sc">\n</span><span class="st">quarter&quot;</span>, </span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>                         <span class="at">colours=</span><span class="fu">colorRampPalette</span>(</span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">c</span>(<span class="st">&quot;#00007F&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;#007FFF&quot;</span>, <span class="st">&quot;cyan&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;yellow&quot;</span>, </span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>                             <span class="st">&quot;#FF7F00&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;#7F0000&quot;</span>))(<span class="dv">255</span>), <span class="at">values=</span>scales<span class="sc">::</span><span class="fu">rescale</span>(<span class="fu">unique</span>(<span class="fu">c</span>(<span class="fu">seq</span>(<span class="fu">min</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio18&quot;</span>]), <span class="dv">0</span>, <span class="at">length=</span><span class="dv">5</span>), <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(climate<span class="sc">$</span>value[climate<span class="sc">$</span>var <span class="sc">==</span> <span class="st">&quot;bio18&quot;</span>]), <span class="at">length=</span><span class="dv">5</span>)))), <span class="at">na.value=</span><span class="st">&quot;transparent&quot;</span>) <span class="sc">+</span></span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title =</span> <span class="fu">element_blank</span>(),<span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>                            <span class="at">axis.ticks =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>                            <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(), <span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>                            <span class="at">strip.placement =</span> <span class="st">&quot;outside&quot;</span>, <span class="at">strip.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>                            <span class="at">rect =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">&quot;transparent&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_sf</span>(<span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>,<span class="dv">180</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">60</span>,<span class="dv">85</span>), <span class="at">expand=</span><span class="cn">FALSE</span>)</span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn plots into grob elements</span></span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> p1 <span class="sc">/</span> p2 <span class="sc">/</span> p3 </span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="at">filename=</span><span class="fu">paste0</span>(<span class="st">&quot;figures/low_clim_change_&quot;</span>, time, <span class="st">&quot;.png&quot;</span>), p, <span class="at">width=</span><span class="dv">14</span>, <span class="at">height=</span><span class="dv">6</span>,</span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>         <span class="at">unit=</span><span class="st">&quot;in&quot;</span>, <span class="at">dpi=</span><span class="dv">600</span>)</span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+## ----setup, include=FALSE-----------------------------------------------------
+knitr::opts_chunk$set(echo = TRUE, fig.width=14, fig.height=8, warning=FALSE, comment=NA, message=FALSE, eval=F)
+
+## -----------------------------------------------------------------------------
+#  library(rISIMIP)
+
+## ----global_options-----------------------------------------------------------
+#  # Specify path of file directory
+#  filedir <- "/media/matt/Data/Documents/Wissenschaft/Data"
+
+## ----install_processNC, eval=FALSE--------------------------------------------
+#  # Install processNC package
+#  remotes::install_github("RS-eco/processNC")
+
+## -----------------------------------------------------------------------------
+#  library(processNC)
+
+## -----------------------------------------------------------------------------
+#  # Crop data by given extent
+#  hurs_ns <- lapply(hurs, FUN=function(x) crop(x, y=c(-30,75,30,90)))
+#  huss_ns <- lapply(huss, FUN=function(x) crop(x, y=c(-30,75,30,90)))
+#  tas_ns <- lapply(tas, FUN=function(x) crop(x, y=c(-30,75,30,90)))
+#  tmin_ns <- lapply(tmin, FUN=function(x) crop(x, y=c(-30,75,30,90)))
+#  tmax_ns <- lapply(tmax, FUN=function(x) crop(x, y=c(-30,75,30,90)))
+#  prec_ns <- lapply(prec, FUN=function(x) crop(x, y=c(-30,75,30,90)))
+#  bioclim_ns <- lapply(bioclim, FUN=function(x) crop(x, y=c(-30,75,30,90)))
+#  
+#  # Change name from .grd to _NorthSea.grd
+#  hurs_ns_names <- gsub(x = hurs_names, pattern = "\\.grd", replacement = "_NorthSea.grd")
+#  huss_ns_names <- gsub(x = huss_names, pattern = "\\.grd", replacement = "_NorthSea.grd")
+#  tas_ns_names <- gsub(x = tas_names, pattern = "\\.grd", replacement = "_NorthSea.grd")
+#  tmin_ns_names <- gsub(x = tmin_names, pattern = "\\.grd", replacement = "_NorthSea.grd")
+#  tmax_ns_names <- gsub(x = tmax_names, pattern = "\\.grd", replacement = "_NorthSea.grd")
+#  prec_ns_names <- gsub(x = prec_names, pattern = "\\.grd", replacement = "_NorthSea.grd")
+#  bioclim_ns_names <- gsub(x = bioclim_names, pattern = "\\.grd", replacement = "_NorthSea.grd")
+#  
+#  # Save to file into NorthSea subfolder
+#  mapply(FUN=function(x,y) writeRaster(x, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", y)), x=hurs_ns, y=hurs_ns_names)
+#  mapply(FUN=function(x,y) writeRaster(x, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", y)), x=huss_ns, y=huss_ns_names)
+#  mapply(FUN=function(x,y) writeRaster(x, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", y)), x=tas_ns, y=tas_ns_names)
+#  mapply(FUN=function(x,y) writeRaster(x, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", y)), x=tmin_ns, y=tmin_ns_names)
+#  mapply(FUN=function(x,y) writeRaster(x, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", y)), x=tmax_ns, y=tmax_ns_names)
+#  mapply(FUN=function(x,y) writeRaster(x, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", y)), x=prec_ns, y=prec_ns_names)
+#  mapply(FUN=function(x,y) writeRaster(x, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", y)), x=bioclim_ns, y=bioclim_ns_names)
+
+## -----------------------------------------------------------------------------
+#  # Read and crop wind data and save to file in NorthSea subfolder
+#  sfcWind_ns <- lapply(list.files(paste0(filedir, "/ISIMIP2b/ProcessedData/global"),
+#                                  pattern="monthly_sfcWind_.*\\.grd", full.names=TRUE),
+#                       FUN=function(x){
+#                         data <- stack(x)
+#                         data <- crop(data, y=c(-30,75,30,90))
+#                         names <- basename(x)
+#                         name <- gsub(x = names, pattern = "\\.grd",
+#                                      replacement = "_NorthSea.grd")
+#                         writeRaster(data, filename=paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/", name))
+#                       })
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  # Install ggmap2 package from Github
+#  devtools::install_github("RS-eco/ggmap2")
+
+## -----------------------------------------------------------------------------
+#  library(ggmap2)
+
+## -----------------------------------------------------------------------------
+#  # Read huss NorthSea data files
+#  hurs <- lapply(list.files(paste0(filedir, "/ISIMIP2b/ProcessedData/NorthSea/historical"),
+#                                  pattern="monthly_hurs_.*\\.grd", full.names=TRUE), stack)
+#  hurs[[1]]
+#  
+#  # Create Map
+#  createMap(hurs[[1]], name="hurs", subnames=month.abb, split=FALSE, ncol=4, width=12, height=8, units="in", dpi=100)
+
+## -----------------------------------------------------------------------------
+#  # Climate variables
+#  vars <- c("to", "o2", "intpp", "phy", "zooc", "so", "pic", "prsn")
+#  
+#  # Climate models
+#  models <- c("gfdl-esm2m", "ipsl-cm5a-lr")
+#  
+#  # Timeframes (Current, Horizon 2050, 2080, 2100, 2150)
+#  timeframes <- c("ref", "2050","2080","2100","2150")
+#  startyears <- c(1970,2036,2066,2086,2136)
+#  endyears <- c(1999,2065,2095,2115,2165)
+#  counter <- 1
+#  
+#  # Run summariseNC for all combinations
+#  for(a in 1:length(vars)){
+#    for(b in 1:length(models)){
+#      for(c in 1:length(timeframes)){
+#        files <- listISIMIP(path=filedir, version="ISIMIP2a", type="ocean", var=vars[a],
+#                            model=models[b], startyear=startyears[c],
+#                            endyear=endyears[c])
+#        filename1 <- paste0(filedir, "ISIMIP2a/ProcessedData/monthly_", vars[a],"_",
+#                           timeframes[c], "_", models[b], ".tif")
+#        filename2 <- paste0(filedir, "ISIMIP2a/ProcessedData/monthly_cv_", vars[a],"_",
+#                           timeframes[c], "_", models[b], ".tif")
+#        if(unique(!is.na(files))){
+#          if(!file.exists(filename1)){
+#            data_sub <- summariseNC(files=files, startyear=startyears[c], tres="month",
+#                                    endyear=endyears[c], filename1=filename1,
+#                                    filename2=filename2, format="GTiff",
+#                                    overwrite=FALSE)
+#          }
+#        }
+#        d <- round((counter*100/(length(vars)*length(models)*length(timeframes))),
+#                   digits = 2)
+#        print(paste(d,"% done"))
+#        counter <- counter + 1
+#      }
+#    }
+#  }
+

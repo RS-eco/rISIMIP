@@ -1,0 +1,181 @@
+---
+title: "Variable correlation & climate scenario comparison"
+author: "RS-eco"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Variable correlation & climate scenario comparison}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width=14, fig.height=8, warning=FALSE, comment=NA, message=FALSE, eval=F)
+```
+
+## Bioclim correlation
+
+Read in the bioclimatic variables, which are included in the package. **Note:** The code for creating the bioclimg files (bioclim.R) is included in the data-raw folder on Github. <!-- Add direct link -->
+
+```{r}
+#Load rISIMIP package
+library(rISIMIP)
+
+#List data files
+d <- data(package="rISIMIP")
+bioclim_files <- d$results[,"Item"][grep(x=d$results[,"Item"], pattern="bioclim")]
+
+#Load data as raster
+bioclim_ref <- lapply(bioclim_files, function(x) raster::rasterFromXYZ(get(data(list=x))))
+bioclim_ref <- lapply(bioclim_ref, function(x){
+  names(x) <- paste0("bio", 1:19)
+  return(x)
+})
+```
+
+## Check for correlation using variance inflation factors
+
+VIF can be used to detect collinearity (Strong correlation between two or more predictor variables). Collinearity causes instability in parameter estimation in regression-type models. The VIF is based on the square of the multiple correlation coefficient resulting from regressing a predictor variable against all other predictor variables. If a variable has a strong linear relationship with at least one other variables, the correlation coefficient would be close to 1, and VIF for that variable would be large. A VIF greater than 10 is a signal that the model has a collinearity problem.
+
+Load usdm R-package from Babak Naimi
+
+```{r}
+#install.packages("usdm")
+library(usdm)
+```
+
+Vif function calculates this statistic for all variables in x.
+
+```{r}
+vif_bio <- lapply(bioclim_ref, FUN=function(x) vif(x, maxobservations=201600))
+vif_bio <- lapply(vif_bio, function(x){
+  x$Variables <- paste0("bio", 1:19)
+  return(x)
+  })
+vif_bio <- Reduce(function(dtf1,dtf2) dplyr::full_join(dtf1, dtf2, by="Variables"), vif_bio)
+colnames(vif_bio) <- c("Variables", sub("bioclim_", "", sub("_landonly.csv.xz", "", basename(bioclim_files))))
+knitr::kable(vif_bio)
+```
+
+vifcor and vifstep uses two different strategy to exclude highly collinear variable through a stepwise procedure. 
+   
+vifcor, first find a pair of variables which has the maximum linear correlation (greater than th), and exclude one of them which has greater VIF. The procedure is repeated untill no variable with a high corrrelation coefficient (greater than threshold) with other variables remains. 
+
+```{r}
+vifcor_bio <- lapply(1:9, FUN=function(x) vifcor(bioclim_ref[[x]], 
+                                                 th=0.7, maxobservations=300000))
+vifcor_bio <- lapply(vifcor_bio, FUN=function(x) x@results)
+vifcor_bio <- Reduce(function(dtf1,dtf2) dplyr::full_join(dtf1, dtf2, by="Variables"), vifcor_bio)
+colnames(vifcor_bio) <- c("Variables", sub("bioclim_", "", sub("_landonly.csv.xz", "", basename(bioclim_files))))
+knitr::kable(vifcor_bio)
+```
+
+vifstep calculate VIF for all variables, exclude one with highest VIF (greater than threshold), 
+repeat the procedure untill no variables with VIF greater than the threshold remains.
+
+```{r}
+vifstep_bio <- lapply(1:9, FUN=function(x) vifstep(bioclim_ref[[x]], 
+                                                   th=6, maxobservations=70000)) 
+vifstep_bio <- lapply(vifstep_bio, FUN=function(x) x@results)
+vifstep_bio <- Reduce(function(dtf1,dtf2) dplyr::full_join(dtf1, dtf2, by="Variables"), vifstep_bio)
+colnames(vifstep_bio) <- c("Variables", sub("bioclim_", "", sub("_landonly.csv.xz", "", basename(bioclim_files))))
+knitr::kable(vifstep_bio)
+```
+
+## Climate scenario comparison
+
+```{r}
+# Read Bioclim data files as one data.frame
+library(dplyr)
+bio_df <- lapply(bioclim_files, function(x){
+  data <- get(data(list=x))
+  data$Year <-  strsplit(basename(x), split="_")[[1]][4]
+  data$Year[data$Year == "landonly"] <- 1995
+  data$Model <- strsplit(basename(x), split="_")[[1]][2]
+  data$RCP <- strsplit(basename(x), split="_")[[1]][3]
+  data$RCP[data$RCP == 1995] <- NA
+  return(data)
+})
+bio_df <- dplyr::bind_rows(bio_df)
+
+# Create summary table
+bio_mean <- bio_df %>% dplyr::select(-c(x,y, bio1, bio2, bio3, bio6, bio7, bio8, bio9, bio10, bio11, bio13, bio14, bio16, bio17)) %>% 
+  group_by(Year, Model, RCP) %>% summarise_all(funs(mean, sd))
+bio_mean[,-c(1:3)] <- round(bio_mean[,-c(1:3)], digits=2)
+bio_mean <- bio_mean %>% tidyr::unite("bio4", "bio4_mean", "bio4_sd",sep=" ± ") %>% tidyr::unite("bio5", "bio5_mean", "bio5_sd",sep=" ± ") %>% tidyr::unite("bio12", "bio12_mean", "bio12_sd",sep=" ± ") %>% tidyr::unite("bio15", "bio15_mean", "bio15_sd",sep=" ± ") %>% tidyr::unite("bio18", "bio18_mean", "bio18_sd",sep=" ± ") %>% tidyr::unite("bio19", "bio19_mean", "bio19_sd",sep=" ± ")
+```
+
+**Table 1.** Mean ± SD of global bioclim values per model.
+
+```{r, results="asis"}
+knitr::kable(bio_mean)
+```
+
+## Bioclim & land-use correlation
+
+**Note:** The code for creating the landuse files (landuse.R) is included in the data-raw folder on Github. <!-- Add direct link -->
+
+```{r}
+# Read Landuse data
+#List data files
+d <- data(package="rISIMIP")
+landuse <- d$results[,"Item"][grep(x=d$results[,"Item"], pattern="landuse-totals_")][2:17]
+landuse_df <- lapply(landuse, function(x){
+  data <- get(data(list=x))
+  data$Year <-  strsplit(strsplit(basename(x), split="_")[[1]][4], split="[.]")[[1]][1]
+  data$Model <- strsplit(basename(x), split="_")[[1]][2]
+  data$RCP <- strsplit(basename(x), split="_")[[1]][1]
+  return(data)
+})
+landuse_df <- do.call(plyr::rbind.fill, landuse_df)
+#head(landuse_df)
+
+# Create summary table
+landuse_df$biofuel_cropland_irrigated[is.na(landuse_df$biofuel_cropland_irrigated)] <- 0
+landuse_df$biofuel_cropland_rainfed[is.na(landuse_df$biofuel_cropland_rainfed)] <- 0
+landuse_mean <- landuse_df %>% dplyr::select(-c(x,y)) %>% group_by(Year, Model, RCP) %>% summarise_all(funs(mean, sd), na.rm=TRUE)
+landuse_mean[,-c(1:3)] <- round(landuse_mean[,-c(1:3)], digits=2)
+landuse_mean <- landuse_mean %>% tidyr::unite("cropland_irrigated", "cropland_irrigated_mean", "cropland_irrigated_sd",sep=" ± ") %>% tidyr::unite("cropland_rainfed", "cropland_rainfed_mean", "cropland_rainfed_sd", sep=" ± ") %>% tidyr::unite("cropland_total", "cropland_total_mean", "cropland_total_sd",sep=" ± ") %>% tidyr::unite("pastures", "pastures_mean", "pastures_sd",sep=" ± ") %>% tidyr::unite("biofuel_cropland_irrigated", "biofuel_cropland_irrigated_mean", "biofuel_cropland_irrigated_sd",sep=" ± ") %>% tidyr::unite("biofuel_cropland_rainfed", "biofuel_cropland_rainfed_mean", "biofuel_cropland_rainfed_sd",sep=" ± ")
+```
+
+**Table 2.** Mean ± SD of global landuse values per model.
+
+```{r, results="asis"}
+knitr::kable(landuse_mean)
+```
+
+## Correlation between bioclim and land-use data
+
+```{r}
+library(corrplot)
+
+# Climate
+clim1995 <- get(data("bioclim_ewembi_1995_landonly"))
+CorD <- cor(clim1995[,c(3,6,7,8,12,13,14,17,20,21)])
+
+clim2080 <- get(data("bioclim_gfdl-esm2m_rcp26_2080_landonly"))
+CorD <- cor(clim2080[,c(3,6,7,8,12,13,14,17,20,21)])
+
+CorForP <- abs(CorD)
+corrplot(CorD, method="circle", bg = "white",addgrid.col = "gray10", 
+         tl.col = "black",tl.cex = 0.8, p.mat = CorForP, sig.level = 0.7)
+
+# Landuse
+landuse1995 <- get(data("rcp26_gfdl-esm2m_landuse-totals_1995"))
+CorD <- cor(landuse1995[,c(3:ncol(landuse1995))])
+
+landuse2080 <- get(data("rcp26_gfdl-esm2m_landuse-totals_2080"))
+CorD <- cor(landuse2080[,c(3:ncol(landuse2080))])
+
+CorForP <- abs(CorD)
+corrplot(CorD, method="circle", bg = "white",addgrid.col = "gray10", tl.col = "black",
+         tl.cex = 0.8, p.mat = CorForP, sig.level = 0.7)
+
+# Climate and land-use
+CorD <- left_join(clim2080, landuse2080, by=c("x", "y")) %>% 
+  dplyr::select(-c(x, y, bio1, bio2, bio3, bio6, bio7, bio8, bio9, bio10, 
+            bio11, bio13, bio14, bio16, bio17)) %>% cor(use="complete.obs")
+CorForP <- abs(CorD)
+corrplot(CorD, method="circle", bg = "white",addgrid.col = "gray10", tl.col = "black",
+         tl.cex = 0.8, p.mat = CorForP, sig.level = 0.7)
+```

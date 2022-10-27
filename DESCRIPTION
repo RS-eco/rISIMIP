@@ -1,0 +1,26 @@
+Package: rISIMIP
+Type: Package
+Title: R Package for processing ISIMIP data in R
+Version: 0.0.1
+Date: 2022-10-18
+Authors@R: person("RS-eco", email = "rs-eco@posteo.de", role = c("cre", "aut"))
+Maintainer: RS-eco <rs-eco@posteo.de>
+Description: R package for reading and processing required ISIMIP NetCDF files. 
+  Package functions require that the corresponding ISIMIP files have been downloaded from the ESGF Server.
+Depends: R (>= 3.5.0)
+Imports: raster, ncdf4
+Suggests:
+    knitr, rmarkdown, kableExtra, 
+    ggplot2, lubridate, terra,
+    dplyr, tidyr, remotes,
+    processNC, ggmap2
+License: GPL (>= 3)
+LazyData: TRUE
+LazyDataCompression: xz
+Encoding: UTF-8
+VignetteBuilder: knitr
+RoxygenNote: 7.2.1
+NeedsCompilation: no
+Author: RS-eco [cre, aut]
+URL: https://github.com/RS-eco/rISIMIP
+BugReports: https://github.com/RS-eco/rISIMIP/issues

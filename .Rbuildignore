@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+README.Rmd
+data-raw
+R/getISIMIP.R
+^LICENSE\.md$
+figures

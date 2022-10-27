@@ -1,0 +1,597 @@
+## ----setup, include=FALSE-----------------------------------------------------
+knitr::opts_chunk$set(echo=T, warning=F, comment=NA, message=F, eval=F)
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  # Install remotes if not previously installed
+#  if(!"remotes" %in% installed.packages()[,"Package"]) install.packages("remotes")
+#  
+#  # Install rISIMIP from Github if not previously installed
+#  if(!"rISIMIP" %in% installed.packages()[,"Package"]) remotes::install_github("RS-eco/rISIMIP")
+
+## -----------------------------------------------------------------------------
+#  library(rISIMIP)
+
+## ----global_options-----------------------------------------------------------
+#  # Specify path of file directory
+#  #filedir <- "/media/matt/Data/Documents/Wissenschaft/Data/"
+#  filedir <- "/work/bb0820/ISIMIP/"
+
+## ----install_processNC--------------------------------------------------------
+#  # Install processNC from Github if not previously installed
+#  if(!"processNC" %in% installed.packages()[,"Package"]) remotes::install_github("RS-eco/processNC")
+
+## ----load_processNC-----------------------------------------------------------
+#  library(processNC)
+
+## -----------------------------------------------------------------------------
+#  #Timeframes
+#  timeframe <- c("1845","1990","1995","2009","2010","2020","2026","2032","2048",
+#                 "2050","2052", "2056","2080","2100","2150","2200","2250")
+#  startyear <- c(1830,1976,1980,1995,1996,2006,2012,2018,2034,
+#                 2036,2038,2042,2066,2086,2136,2186,2236)
+#  endyear <- c(1859,2005,2009,2024,2025,2035,2041,2047,2063,
+#               2065,2067,2071,2095,2115,2165,2215,2265)
+#  timeperiods <- data.frame(timeframe=timeframe, startyear=startyear,endyear=endyear)
+#  
+#  #Climate variables
+#  vars <- c("tasmin", "tasmax", "pr")
+#  
+#  #Climate models
+#  models <- c("GFDL-ESM2M", "HadGEM2-ES", "IPSL-CM5A-LR", "MIROC5")
+#  
+#  #RCP scenarios
+#  rcps <- c("rcp26", "rcp60")
+#  
+#  #Create list of variable, climate model and time frame combination
+#  var_mod_time <- expand.grid(var = vars, model = models,
+#                              timeframe = timeframe, rcp = rcps)
+#  
+#  # Add historical scenario
+#  df <- expand.grid(rcp="historical", var=vars, model=models, timeframe = "1990")
+#  var_mod_time <- rbind(df, var_mod_time)
+#  
+#  # Add EWEMBI scenario
+#  df <- expand.grid(rcp="1995", var=vars, model="EWEMBI", timeframe = "1995")
+#  var_mod_time <- rbind(df, var_mod_time)
+#  
+#  # Add piControl scenario
+#  df <- expand.grid(rcp="piControl", var=vars, model=models, timeframe = "1845")
+#  var_mod_time <- rbind(df, var_mod_time)
+#  rm(vars, models, timeframe, rcps)
+#  
+#  var_mod_time <- dplyr::left_join(var_mod_time, timeperiods, by="timeframe"); rm(timeperiods)
+
+## ---- eval=F------------------------------------------------------------------
+#  # Run summariseNC for all combinations
+#  lapply(1:nrow(var_mod_time), FUN=function(x){
+#    files <- listISIMIP(path=filedir, var=var_mod_time$var[x], extent="global",
+#                        model=var_mod_time$model[x],
+#                        scenario=var_mod_time$rcp[x],
+#                        startyear=var_mod_time$startyear[x],
+#                        endyear=var_mod_time$endyear[x])
+#    filename1 <- paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/global/",
+#                        var_mod_time$rcp[x], "/monthly_",
+#                        var_mod_time$var[x], "_", var_mod_time$model[x], "_",
+#                        var_mod_time$rcp[x], "_", var_mod_time$timeframe[x],
+#                        ".nc4")
+#    if(length(files)==4){
+#      if(!file.exists(filename1)){
+#        data_sub <- summariseNC(files=files,
+#                                startdate=var_mod_time$startyear[x],
+#                                enddate=var_mod_time$endyear[x],
+#                                filename1=filename1, format="CDF",
+#                                overwrite=FALSE)
+#      }
+#    }
+#    print(x/nrow(var_mod_time)*100)
+#  })
+#  #system("shutdown -s -f")
+
+## ---- eval=F------------------------------------------------------------------
+#  #Turn var_mod_time into correct order
+#  var_mod_time <- dplyr::arrange(var_mod_time, rcp, model, var)
+#  
+#  #Create outfile list
+#  var_mod_time$outfile <- sapply(1:nrow(var_mod_time), FUN=function(x){
+#    paste0(filedir, "/ISIMIP2b/", var_mod_time$var[x], "_day_", var_mod_time$model[x], "_",
+#           var_mod_time$rcp[x], "_", floor(var_mod_time$startyear[x]/10)*10+1, "_",
+#           ceiling(var_mod_time$endyear[x]/10)*10, ".nc4")
+#  })
+#  outfiles <- unique(var_mod_time$outfile)
+#  
+#  #Create oufile2 list
+#  var_mod_time$outfile2 <- sapply(1:nrow(var_mod_time), FUN=function(x){
+#    paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/global/", var_mod_time$rcp[x], "/monthly_", var_mod_time$var[x], "_",
+#           var_mod_time$model[x], "_", var_mod_time$rcp[x], "_", var_mod_time$timeframe[x], ".nc4")
+#  })
+#  
+#  #Run mergeNC for all unique outfiles
+#  lapply(outfiles, FUN=function(x){
+#    # Subset var_mod_time according to outfiles
+#    var_mod_sub <- var_mod_time[var_mod_time$outfile == x,]
+#  
+#    if(any(!file.exists(var_mod_sub$outfile2))){
+#      # List ISIMIP2b files
+#      files <- rISIMIP::listISIMIP(path=paste0(filedir,
+#                                               "/ISIMIP2b/InputData/GCM/"),
+#                                   var=var_mod_sub$var[1],
+#                                   extent="global", model=var_mod_sub$model[1],
+#                                   scenario=var_mod_sub$rcp[1],
+#                                   startyear=var_mod_sub$startyear[1], endyear=var_mod_sub$endyear[1])
+#      files <- Filter(Negate(is.na), files)
+#      if(all(var_mod_sub$startyear >= 2006 & length(files)==4) |
+#         all(var_mod_sub$startyear < 2006 & length(files) == 5) |
+#         all(var_mod_sub$rcp == "piControl" & length(files) == 4) |
+#         all(var_mod_sub$rcp == "historical" & length(files) == 4)){
+#        if(!file.exists(x)){
+#          processNC::mergeNC(files, x)
+#        }
+#        # Run aggregateNC for all combinations
+#        lapply(1:nrow(var_mod_sub), FUN=function(y){
+#          if(!file.exists(var_mod_sub$outfile2[y])){
+#            processNC::aggregateNC(infile=x, outfile=var_mod_sub$outfile2[y],
+#                                   var=var_mod_sub$var[y],
+#                        startdate=var_mod_sub$startyear[y],
+#                        enddate=var_mod_sub$endyear[y])
+#          }
+#        })
+#        file.remove(x)
+#      } else{
+#        print(files)
+#      }
+#    }
+#  })
+#  #system("shutdown -s -f")
+
+## ----filelist-----------------------------------------------------------------
+#  #List all tasmin and tasmax files
+#  tmin_files <- list.files(
+#    paste0(getwd(), "/ISIMIP2b/DerivedInputData/GCM/global/"),
+#    pattern="monthly_tasmin_.*\\.nc4", full.names=T, recursive=T)
+#  tmax_files <- list.files(
+#    paste0(getwd(), "/ISIMIP2b/DerivedInputData/GCM/global/"),
+#    pattern="monthly_tasmax_.*\\.nc4", full.names=T, recursive=T)
+#  
+#  # List precipitation files
+#  prec_files <-  list.files(
+#    paste0(getwd(), "/ISIMIP2b/DerivedInputData/GCM/global/"),
+#    pattern="monthly_pr_.*\\.nc4", full.names=T, recursive=T)
+#  
+#  # Select certain years
+#  years <- unique(var_mod_time$timeframe)[c(2,4:13)]
+#  
+#  tmin_files <- unlist(lapply(years, function(x) tmin_files[grep(tmin_files, pattern=x)]))
+#  tmax_files <- unlist(lapply(years, function(x) tmax_files[grep(tmax_files, pattern=x)]))
+#  prec_files <- unlist(lapply(years, function(x) prec_files[grep(prec_files, pattern=x)]))
+#  
+#  # Check tmin, tmax and prec files are identical,
+#  #not just same number of files
+
+## ----landonly, eval=F---------------------------------------------------------
+#  # Read landonly mask
+#  data("landseamask_generic", package="rISIMIP")
+#  
+#  # Mask data by landonly mask
+#  library(raster)
+#  tmin_lo <- lapply(tmin_files, FUN=function(x) mask(stack(x), landseamask_generic))
+#  tmax_lo <- lapply(tmax_files, FUN=function(x) mask(stack(x), landseamask_generic))
+#  prec_lo <- lapply(prec_files, FUN=function(x) mask(stack(x), landseamask_generic))
+#  
+#  plot(tmin_lo[[5]])
+#  plot(tmax_lo[[5]])
+#  plot(prec_lo[[5]])
+#  
+#  # Merge lists into one list
+#  data_lo <- c(tmin_lo, tmax_lo, prec_lo)
+#  data_files <- c(tmin_files, tmax_files, prec_files)
+#  
+#  # Save to file in landonly subfolder
+#  mapply(FUN=function(x,y){
+#    filename <- sub(".nc4", "_landonly.nc", gsub("global", "landonly", y))
+#    if(!file.exists(sub(".nc4", ".nc", filename))){
+#      x <- stack(x)
+#      #x <- as.data.frame(rasterToPoints(x))
+#      #colnames(x) <- c("x", "y", month.abb)
+#      raster::writeRaster(x, filename=filename, format="CDF",
+#                          xname="lon", yname="lat", zname="time",
+#                          zunit="years since 1661-1-1 00:00:00",
+#                          force_v4=TRUE, compression=9)
+#    }
+#  }, x=data_lo, y=data_files)
+#  
+#  # Change file ending to .nc4
+#  lapply(data_files, function(x){
+#    file.rename(sub(".nc4", "_landonly.nc",
+#                      gsub("global", "landonly", x)), sub(".nc4", "_landonly.nc4",
+#                      gsub("global", "landonly", x)))
+#  })
+
+## ----units, eval=F------------------------------------------------------------
+#  #Turn climate data into right units (degree Celsius and mm)
+#  
+#  #Convert temperature from Kelvin to degree Celsius
+#  tmin_lo <- lapply(tmin_lo, FUN=function(x){
+#    raster::calc(x, fun=function(x){x-273.15})
+#  })
+#  tmax_lo <- lapply(tmax_lo, FUN=function(x){
+#    raster::calc(x, fun=function(x){x-273.15})
+#  })
+#  
+#  # Convert precipitation from kg m-2 s-1 to kg m-2 day-1
+#  prec_lo <- lapply(prec_lo, FUN=function(x){
+#    raster::calc(x, fun=function(x){x*86400})
+#  })
+#  
+#  plot(tmin_lo[[1]][[1]])
+#  plot(tmax_lo[[1]][[1]])
+#  plot(prec_lo[[1]][[1]])
+
+## ----bioclim, eval=F----------------------------------------------------------
+#  library(raster)
+#  
+#  # Create list with bioclim names
+#  bioclim_names <- gsub(x = prec_files, pattern = "\\monthly_pr",
+#                        replacement = "bioclim")
+#  bioclim_names <- sub(".nc4", "_landonly.nc",
+#                       gsub("global", "landonly", bioclim_names))
+#  
+#  # Calculate bioclim variables for all models and time frames and save to file
+#  bioclim <- mapply(FUN=function(x,y,z,name){
+#    if(!file.exists(sub(".nc4", ".nc", name))){
+#      bio <- dismo::biovars(tmin=x, tmax=y, prec=z)
+#      raster::writeRaster(bio, filename=sub(".nc4", ".nc", name), format="CDF",
+#                          xname="lon", yname="lat", zname="time",
+#                          zunit="years since 1661-1-1 00:00:00",
+#                          force_v4=TRUE, compression=9)
+#    }
+#  }, x=tmin_lo, y=tmax_lo, z=prec_lo, name=bioclim_names)
+#  
+#  # Change file name from .nc to .nc4
+#  bioclim_files <- list.files(
+#    paste0(getwd(), "/ISIMIP2b/DerivedInputData/GCM/landonly"),
+#    pattern="bioclim_.*\\.nc", full.names=T, recursive=T)
+#  #lapply(bioclim_files, function(x) raster::extension(x, ".nc4"))
+#  file.rename(bioclim_files, sub(".nc", ".nc4", bioclim_files))
+
+## -----------------------------------------------------------------------------
+#  bioclim_files <- list.files(
+#    paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/landonly"),
+#    pattern="bioclim_.*\\.nc4", full.names=T, recursive=T)
+#  bioclim <- lapply(bioclim_files, raster::stack)
+#  
+#  # Need to implement bioclim_names here!
+#  #bioclim_names
+#  
+#  # List internal bioclim files
+#  #(bioclim_files <- list.files("data", pattern="bioclim_.*\\landonly.rda",
+#  #                            full.names=T, recursive=T))
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  # Install ggmap2 package from Github
+#  devtools::install_github("RS-eco/ggmap2")
+
+## -----------------------------------------------------------------------------
+#  library(ggmap2)
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  # Read tas landonly data files
+#  tas <- lapply(
+#    list.files(paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/landonly/historical"),
+#               pattern="monthly_tas_.*\\.nc", full.names=TRUE), stack)
+#  
+#  # Create Map
+#  createMap(tas[[1]], name="tas", subnames=month.abb,
+#            split=FALSE, ncol=3, width=12, height=8, units="in", dpi=100)
+
+## ---- bioclim_2050, eval=FALSE------------------------------------------------
+#  # Read Bioclim data files
+#  bioclim_2050 <- lapply(list.files(paste0(filedir, "ISIMIP2b/ProcessedData/bioclim"),
+#                                    pattern="rcp_2050.nc", full.names=TRUE), stack)
+#  
+#  # Create Map of bioclim data
+#  bio04_2050 <- stack(lapply(bioclim_2050, function(x) x[[4]]))
+#  createMap(bioclim[[20]][[4]], name="Bio04", split=FALSE, ncol=2, width=8, height=12, units="in", filename=NA, dpi=100)
+
+## ----eval=FALSE, echo=FALSE---------------------------------------------------
+#  # Create maps for all variables, all models, all scenarios and all timeframes
+#  vars <- c("hurs", "huss", "tas", "tasmin", "tasmax", "pr")
+#  #scenarios <- c("historical", "rcp26", "rcp60")
+#  
+#  files <- sapply(vars, function(x) list.files(paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/landonly/"), pattern=paste0("monthly_", x, "_.*\\.nc"), full.names=T, recursive=T))
+#  files <- do.call("c", files)
+#  
+#  mapply(FUN=function(data,name) createMap(data=data, name=x, subnames=month.abb, split=FALSE, ncol=3, width=12, height=8, units="in", filename=name, dpi=100), data=lapply(files, stack), name=sapply(files, FUN=function(x) paste0("figures/", sub(".grd", ".tiff", basename(x)))))
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  library(readr)
+#  tmax_files <- list.files("/media/matt/Data/Documents/Wissenschaft/Data/ISIMIP2b/DerivedInputData/30yr_climate/", pattern="monthly_tasmax_.*\\.nc", full.names=TRUE, recursive=T)
+#  for(i in 1:length(tmax_files)){
+#    tasmax <- stack(tmax_files[i])
+#    tasmax_df <- as.data.frame(rasterToPoints(tasmax))
+#    colnames(tasmax_df) <- c("x", "y", month.abb)
+#    ggplot() + geom_raster(data=tasmax_df, aes(x=x, y=y, fill=Jul)) +
+#      scale_fill_gradientn(colours=
+#                             colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+#                                                "#7FFF7F", "yellow",
+#                                                "#FF7F00", "red", "#7F0000"))(255))
+#    ggsave(sub(pattern=".grd", ".png", tmax_files[i]))
+#    readr::write_csv(tasmax_df, sub(pattern=".grd", ".csv", tmax_files[i]))
+#  }
+#  file.remove(tmax_files)
+#  file.remove(sub(pattern=".grd", ".gri", tmax_files))
+#  
+#  bioclim_files <- list.files("/media/matt/Data/Documents/Wissenschaft/Data/ISIMIP2b/DerivedInputData/30yr_climate/rcp85",
+#                              pattern="bioclim_.*\\.nc4", full.names=TRUE, recursive=T)
+#  for(i in 1:length(bioclim_files)){
+#    bioclim <- stack(bioclim_files[i])
+#    bioclim_df <- as.data.frame(rasterToPoints(bioclim))
+#      colnames(bioclim_df) <- c("x", "y", paste0("bio", 1:19))
+#      ggplot() + geom_tile(data=bioclim_df, aes(x=x, y=y, fill=bio5)) +
+#      scale_fill_gradientn(colours=
+#                             colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan",
+#                                                "#7FFF7F", "yellow",
+#                                                "#FF7F00", "red", "#7F0000"))(255)) +
+#        geom_sf()
+#    ggsave(sub(pattern=".nc4", ".png", bioclim_files[i]))
+#    readr::write_csv(bioclim_df, sub(pattern=".nc4", ".csv.xz", bioclim_files[i]))
+#  }
+#  file.remove(bioclim_files)
+
+## -----------------------------------------------------------------------------
+#  bioclim_1995 <- read.csv(list.files(
+#    paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/landonly"),
+#    pattern="bioclim_EWEMBI.*\\.nc",
+#    full.names=T, recursive=T))[,c("x", "y", "bio4", "bio5", "bio12", "bio15", "bio18", "bio19")]
+#  bioclim_1995$year <- 1995
+#  bioclim_1995 <- tidyr::gather(bioclim_1995, var, value, -c(x,y,year))
+#  bioclim_1995 <- tidyr::spread(bioclim_1995, year, value)
+#  
+#  bioclim_fut <- c(list.files(
+#    paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/landonly"),
+#    pattern="bioclim_.*2050.*\\.csv.xz", full.names=T, recursive=T), list.files(
+#      paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/landonly"),
+#      pattern="bioclim_.*2080.*\\.csv.xz", full.names=T, recursive=T))
+#  bioclim_fut <- lapply(bioclim_fut, function(x){
+#    data <- read.csv(x)
+#    data$year <- strsplit(basename(x), split="_")[[1]][4]
+#    data$model <- strsplit(basename(x), split="_")[[1]][2]
+#    data$scenario <- strsplit(basename(x), split="_")[[1]][3]
+#    return(data)
+#  })
+#  bioclim_fut <- do.call("rbind", bioclim_fut)
+#  
+#  library(dplyr)
+#  bioclim_fut <- bioclim_fut %>%
+#    dplyr::select(c(x,y,model,scenario,year,bio4,bio5,bio12,bio15,bio18,bio19))
+#  bioclim_fut <- tidyr::gather(bioclim_fut, var, value, -c(x,y,model,scenario,year))
+#  bioclim_fut <- tidyr::spread(bioclim_fut, year, value)
+#  
+#  # Calculate delta climate
+#  bioclim_all <- left_join(bioclim_fut, bioclim_1995, by=c("x", "y", "var"))
+#  delta_climate <- bioclim_all %>%
+#    mutate_at(vars(`2050`:`2080`), funs(. - bioclim_all$`1995`)) %>% dplyr::select(-c(`1995`))
+#  delta_climate <- tidyr::gather(delta_climate, year, value, -c(x,y,model,scenario,var))
+#  delta_climate <- delta_climate %>% group_by(x,y,scenario,var, year) %>%
+#    summarise(value=mean(value, na.rm=TRUE))
+#  
+#  #Subset data for plotting
+#  lapply(c("2050", "2080"), function(x){
+#    climate <- delta_climate[delta_climate$year == x,]
+#    climate <- climate %>% tidyr::unite(year, scenario, col="time_rcp")
+#    climate$time_rcp <- factor(climate$time_rcp, labels=c(paste0(x, " RCP2.6"),
+#                                                          paste0(x, " RCP6.0")))
+#    data(outline, package="ggmap2")
+#    library(ggplot2)
+#    p1 <- ggplot() +
+#      geom_raster(data=climate[climate$var == "bio4",], aes(x=x, y=y, fill=value)) +
+#      facet_wrap(~ time_rcp, ncol=2) +
+#      geom_polygon(data=outline, aes(x=long,y=lat, group=group),
+#                   fill="transparent", colour="black") +
+#      scale_fill_gradientn(name="Temperature \nseasonality", colours=rev(colorRampPalette(
+#        c("#00007F", "blue", "#007FFF", "cyan", "white", "yellow",
+#          "#FF7F00", "red", "#7F0000"))(255)), values=scales::rescale(unique(c(seq(min(climate$value[climate$var == "bio4"]), 0, length=5), seq(0, max(climate$value[climate$var == "bio4"]), length=5)))), na.value="transparent") +
+#      theme_classic() + theme(axis.title = element_blank(), axis.line = element_blank(),
+#                              axis.ticks = element_blank(), axis.text = element_blank(),
+#                              panel.grid = element_blank(),
+#                              strip.background= element_blank(),
+#                              strip.placement = "outside",
+#                              strip.text = element_text(size=10, face="bold"),
+#                              rect = element_rect(fill = "transparent")) +
+#      coord_quickmap(xlim=c(-180,180), ylim=c(-60,85), expand=FALSE)
+#    p2 <- ggplot() +
+#      geom_raster(data=climate[climate$var == "bio12",], aes(x=x, y=y, fill=value)) +
+#      facet_wrap(~ time_rcp, ncol=2) +
+#      geom_polygon(data=outline, aes(x=long,y=lat, group=group),
+#                   fill="transparent", colour="black") +
+#      scale_fill_gradientn(name="Annual \nprecipitation", colours=colorRampPalette(
+#        c("#00007F", "blue", "#007FFF", "cyan", "white", "yellow",
+#          "#FF7F00", "red", "#7F0000"))(255),
+#        values=scales::rescale(unique(c(seq(min(climate$value[climate$var == "bio12"]),
+#                                            0, length=5), seq(0, max(climate$value[climate$var == "bio12"]), length=5)))), na.value="transparent") +
+#      theme_classic() + theme(axis.title = element_blank(),axis.line = element_blank(),
+#                              axis.ticks = element_blank(), axis.text = element_blank(),
+#                              panel.grid = element_blank(),
+#                              strip.background= element_blank(),
+#                              strip.placement = "outside",
+#                              strip.text = element_blank(),
+#                              rect = element_rect(fill = "transparent")) +
+#      coord_quickmap(xlim=c(-180,180), ylim=c(-60,85), expand=FALSE)
+#    p3 <- ggplot() +
+#      geom_raster(data=climate[climate$var == "bio19",], aes(x=x, y=y, fill=value)) +
+#      facet_wrap(~ time_rcp, ncol=2) +
+#      geom_polygon(data=outline, aes(x=long,y=lat, group=group),
+#                   fill="transparent", colour="black") +
+#      scale_fill_gradientn(name="Precipitation \nof coldest \nquarter",
+#                           colours=colorRampPalette(
+#                             c("#00007F", "blue", "#007FFF", "cyan", "white", "yellow",
+#                               "#FF7F00", "red", "#7F0000"))(255), values=scales::rescale(unique(c(seq(min(climate$value[climate$var == "bio19"]), 0, length=5), seq(0, max(climate$value[climate$var == "bio19"]), length=5)))), na.value="transparent") +
+#      theme_classic() + theme(axis.title = element_blank(),axis.line = element_blank(),
+#                              axis.ticks = element_blank(), axis.text = element_blank(),
+#                              panel.grid = element_blank(),
+#                              strip.background= element_blank(),
+#                              strip.placement = "outside", strip.text = element_blank(),
+#                              rect = element_rect(fill = "transparent")) +
+#      coord_quickmap(xlim=c(-180,180), ylim=c(-60,85), expand=FALSE)
+#  
+#    # Turn plots into grob elements
+#    p <- lapply(list(p1,p2,p3), ggplotGrob)
+#    p <- rbind(p[[1]], p[[2]], p[[3]], size="first")
+#    for (i in which(p$layout$name == "guide-box")) {
+#      p$grobs[[i]] <- p$grobs[[i]]$grobs[[1]]
+#    }
+#    png(file=paste0("figures/top_clim_change_", x, ".png"),
+#        width=10, height=6, unit="in", res=600)
+#    grid::grid.draw(p)
+#    dev.off()
+#  })
+#  
+#  lapply(c("2050", "2080"), function(time){
+#    climate <- delta_climate[delta_climate$year == time,]
+#    climate <- climate %>% tidyr::unite(year, scenario, col="time_rcp")
+#    climate$time_rcp <- factor(climate$time_rcp, labels=c(paste0(time, " RCP2.6"),
+#                                                          paste0(time, " RCP6.0")))
+#    data(outline, package="ggmap2")
+#    library(ggplot2)
+#    p1 <- ggplot() +
+#      geom_raster(data=climate[climate$var == "bio5",], aes(x=x, y=y, fill=value)) +
+#      facet_wrap(~ time_rcp, ncol=2) +
+#      geom_polygon(data=outline, aes(x=long,y=lat, group=group),
+#                   fill="transparent", colour="black") +
+#      scale_fill_gradientn(name="Maximum \ntemperature", colours=rev(colorRampPalette(
+#        c("#00007F", "blue", "#007FFF", "cyan", "white", "yellow",
+#          "#FF7F00", "red", "#7F0000"))(255)),
+#        values=scales::rescale(unique(c(seq(min(climate$value[climate$var == "bio5"]), 0, length=5), seq(0, max(climate$value[climate$var == "bio5"]), length=5)))), na.value="transparent") +
+#      theme_classic() + theme(axis.title = element_blank(),axis.line = element_blank(),
+#                              axis.ticks = element_blank(), axis.text = element_blank(),
+#                              panel.grid = element_blank(), strip.background= element_blank(),
+#                              strip.placement = "outside", strip.text = element_text(size=10, face="bold"),
+#                              rect = element_rect(fill = "transparent")) +
+#      coord_quickmap(xlim=c(-180,180), ylim=c(-60,85), expand=FALSE)
+#    p2 <- ggplot() +
+#      geom_raster(data=climate[climate$var == "bio15",], aes(x=x, y=y, fill=value)) +
+#      facet_wrap(~ time_rcp, ncol=2) +
+#      geom_polygon(data=outline, aes(x=long,y=lat, group=group),
+#                   fill="transparent", colour="black") +
+#      scale_fill_gradientn(name="Precipitation \nseasonality", colours=colorRampPalette(
+#        c("#00007F", "blue", "#007FFF", "cyan", "white", "yellow",
+#          "#FF7F00", "red", "#7F0000"))(255), values=scales::rescale(unique(c(seq(min(climate$value[climate$var == "bio15"]), 0, length=5), seq(0, max(climate$value[climate$var == "bio15"]), length=5)))), na.value="transparent") +
+#      theme_classic() + theme(axis.title = element_blank(),axis.line = element_blank(),
+#                              axis.ticks = element_blank(), axis.text = element_blank(),
+#                              panel.grid = element_blank(), strip.background= element_blank(),
+#                              strip.placement = "outside", strip.text = element_blank(),
+#                              rect = element_rect(fill = "transparent")) +
+#      coord_quickmap(xlim=c(-180,180), ylim=c(-60,85), expand=FALSE)
+#    p3 <- ggplot() +
+#      geom_raster(data=climate[climate$var == "bio18",], aes(x=x, y=y, fill=value)) +
+#      facet_wrap(~ time_rcp, ncol=2) +
+#      geom_polygon(data=outline, aes(x=long,y=lat, group=group),
+#                   fill="transparent", colour="black") +
+#      scale_fill_gradientn(name="Precipitation \nof warmest \nquarter",
+#                           colours=colorRampPalette(
+#                             c("#00007F", "blue", "#007FFF", "cyan", "white", "yellow",
+#                               "#FF7F00", "red", "#7F0000"))(255), values=scales::rescale(unique(c(seq(min(climate$value[climate$var == "bio18"]), 0, length=5), seq(0, max(climate$value[climate$var == "bio18"]), length=5)))), na.value="transparent") +
+#      theme_classic() + theme(axis.title = element_blank(),axis.line = element_blank(),
+#                              axis.ticks = element_blank(), axis.text = element_blank(),
+#                              panel.grid = element_blank(), strip.background= element_blank(),
+#                              strip.placement = "outside", strip.text = element_blank(),
+#                              rect = element_rect(fill = "transparent")) +
+#      coord_quickmap(xlim=c(-180,180), ylim=c(-60,85), expand=FALSE)
+#  
+#    # Turn plots into grob elements
+#    p <- lapply(list(p1,p2,p3), ggplotGrob)
+#    p <- rbind(p[[1]], p[[2]], p[[3]], size="first")
+#    for (i in which(p$layout$name == "guide-box")) {
+#      p$grobs[[i]] <- p$grobs[[i]]$grobs[[1]]
+#    }
+#    png(file=paste0("figures/low_clim_change_", time, ".png"),
+#        width=10, height=6, unit="in", res=600)
+#    grid::grid.draw(p)
+#    dev.off()
+#  })
+
+## ---- boxplot_bio-------------------------------------------------------------
+#  #' Create maps and plots of climate data
+#  
+#  filedir <- "/home/mabi/Documents/Wissenschaft/Data"
+#  filedir <- "E:/Data"
+#  
+#  # Get climate files (csv with xy and BioClimVar)
+#  clim_data <- list.files(paste0(filedir, "/ISIMIP2b/DerivedInputData/GCM/landonly"), pattern="bioclim",
+#                          recursive=TRUE, full.names=TRUE)
+#  
+#  # Retrieve information on Model, RCP and timeframe
+#  models <- lapply(clim_data, function(x) strsplit(basename(x), split="_")[[1]][2])
+#  rcps <- lapply(clim_data, function(x) strsplit(basename(x), split="_")[[1]][3])
+#  times <- lapply(clim_data, function(x) strsplit(basename(x), split="[.;_]")[[1]][4])
+#  
+#  # Read in future climate files
+#  clim_data <- lapply(clim_data, function(x) readr::read_csv(x))
+#  
+#  # Add column for model type, rcp and timeframe to each list
+#  clim_data<- Map(cbind, clim_data, model = models, rcp = rcps, time = times)
+#  
+#  # Turn climate data into dataframe
+#  clim_data <- do.call("rbind", clim_data)
+#  
+#  # Adjust EWEMBI data
+#  str(clim_data)
+#  clim_data$time <- as.character(clim_data$time)
+#  clim_data$time[clim_data$model == "EWEMBI"] <- 1995
+#  clim_data$time <- as.numeric(clim_data$time)
+#  clim_data$rcp <- as.character(clim_data$rcp)
+#  clim_data$rcp[clim_data$model == "EWEMBI"] <- "rcp26"
+#  clim_ewembi <- clim_data[clim_data$model == "EWEMBI",]
+#  clim_ewembi$rcp <- "rcp60"
+#  clim_data <- rbind(clim_data, clim_ewembi); rm(clim_ewembi)
+#  
+#  # Only select bio4, bio5, bio12, bio15, bio18 bio19
+#  library(dplyr); library(tidyr)
+#  clim_data <- clim_data %>% select(x, y, bio4, bio5, bio12, bio15, bio18,
+#                                    bio19, model, rcp, time) %>%
+#    gather(key=var, value=value, -c(x, y, model, rcp, time))
+#  clim_data$var <- factor(clim_data$var,
+#                          levels=c("bio4", "bio5", "bio12", "bio15", "bio18", "bio19"),
+#                          labels=c("Bio 4", "Bio 5", "Bio 12", "Bio 15", "Bio 18", "Bio 19"))
+#  
+#  library(rISIMIP)
+#  data("landseamask_generic", package="rISIMIP")
+#  area <- raster::area(landseamask_generic)
+#  area <- as.data.frame(rasterToPoints(area))
+#  colnames(area) <- c("x", "y", "area")
+#  
+#  # Add area of each cell to clim_data
+#  isimip_area <- isimip_area
+#  clim_data <- left_join(clim_data, isimip_area, by=c("x", "y"))
+#  
+#  # Create line graph
+#  clim_data <- left_join(clim_data, area, by=c("x", "y"))
+#  clim_mean <- clim_data %>% filter(time %in% c(1995, 2020, 2050, 2080)) %>%
+#    group_by(model, rcp, time, var) %>% summarise(mean=weighted.mean(value, w=area, na.rm=TRUE))
+#  ggplot(data=clim_mean,
+#         aes(x=time, y=mean,
+#             colour=factor(model), linetype=factor(rcp))) + geom_point() +
+#    geom_line() +
+#    labs(x="", y="") +
+#    facet_wrap(~ var, scales="free_y", ncol=2) +
+#    scale_x_continuous(breaks=c(1995,2020, 2050,2080)) +
+#    scale_colour_discrete(name="Model") +
+#    scale_linetype_discrete(name="Scenario") +
+#    theme_bw() + theme(strip.background= element_blank(),
+#                       legend.background = element_rect(fill = NA),
+#                       panel.spacing.x=unit(0.25, "lines"),
+#                       panel.spacing.y=unit(0.25, "lines"))
+#  ggsave("figures/model_variables_1995_2080.pdf", width=9, height=6, dpi=600)
+#  
+#  # Load GitHub package
+#  library(ggmap2)
+#  
+#  #Plot Map of current climate data
+#  clim_data_wide <-
+#    createMap(data=clim_data_wide, name="Bio4")
+#  
+#  # Plot Map of future climate data
+#  climSub <- clim[c(1,2,6,22,23,24)]
+#  climSub <- climSub[climSub$rcp == "rcp26",]
+#  colnames(climSub) <- c("x", "y", "value", "var", "rcp", "var2")
+#  createMap(data=climSub, split=FALSE, facet_grid = TRUE, long=TRUE)
+

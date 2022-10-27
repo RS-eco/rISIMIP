@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="RS-eco" />
+
+<meta name="date" content="2022-01-04" />
+
+<title>Global mean - ISIMIP2b</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Global mean - ISIMIP2b</h1>
+<h4 class="author">RS-eco</h4>
+<h4 class="date">2022-01-04</h4>
+
+
+
+<div id="data-setup" class="section level2">
+<h2>Data Setup</h2>
+<p>Load packages</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rISIMIP)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<p>First, specify the file path, where the ISIMIP data is located.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify path of file directory</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>filedir <span class="ot">&lt;-</span> <span class="st">&quot;/media/matt/Data/Documents/Wissenschaft/Data/&quot;</span></span></code></pre></div>
+</div>
+<div id="mean-global-annual-mean-isimip2b-temperature" class="section level2">
+<h2>Mean global annual mean ISIMIP2b temperature</h2>
+<p>This data can be downloaded from the ISIMIP Server and is included in this package.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(yearmean_tas, <span class="at">package=</span><span class="st">&quot;rISIMIP&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(runmean31_tas, <span class="at">package=</span><span class="st">&quot;rISIMIP&quot;</span>)</span></code></pre></div>
+</div>
+<div id="mean-global-annual-mean-ewembi-temperature" class="section level2">
+<h2>Mean global annual mean EWEMBI temperature</h2>
+<p>Load EWEMBI mean temperature files and calculate annual global mean</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load temperature files</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tas_ewembi_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP2b/EWEMBI&quot;</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;^tas_&quot;</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>, <span class="at">recursive=</span>T)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>outfiles <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;tas_&quot;</span>, <span class="st">&quot;yearmean_tas_&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;EWEMBI&quot;</span>, <span class="st">&quot;DerivedInputData/globalmeans/EWEMBI&quot;</span>, tas_ewembi_files))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>landseamask <span class="ot">&lt;-</span> <span class="fu">paste0</span>(filedir, <span class="st">&quot;ISIMIP2b/InputData/landseamask/ISIMIP2b_landseamask_generic.nc4&quot;</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y) {</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(y)){<span class="fu">system</span>(<span class="fu">paste0</span>(<span class="st">&#39;cdo fldmean -yearmean -ifthen &#39;</span>, landseamask, <span class="st">&quot; &quot;</span>, x, <span class="st">&#39; &#39;</span>, y))}}, <span class="at">x=</span>tas_ewembi_files, <span class="at">y=</span>outfiles); <span class="fu">rm</span>(tas_ewembi_files, landseamask)  </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Read outfiles into one data.frame</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>tas <span class="ot">&lt;-</span> <span class="fu">lapply</span>(outfiles, <span class="cf">function</span>(x){</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  nc <span class="ot">&lt;-</span> ncdf4<span class="sc">::</span><span class="fu">nc_open</span>(x)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  tas <span class="ot">&lt;-</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  tas <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(tas)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  timeref <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">strsplit</span>(nc<span class="sc">$</span>dim[[<span class="dv">1</span>]]<span class="sc">$</span>units, <span class="st">&quot; &quot;</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]) </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)[<span class="dv">1</span>] <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    tas<span class="sc">$</span>year <span class="ot">&lt;-</span> timeref <span class="sc">+</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)[<span class="dv">1</span>] <span class="sc">!=</span> <span class="dv">0</span>){</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    tas<span class="sc">$</span>year <span class="ot">&lt;-</span> timeref <span class="sc">+</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  ncdf4<span class="sc">::</span><span class="fu">nc_close</span>(nc)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tas)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>tas <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(tas); <span class="fu">rm</span>(outfiles)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Create plot</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>tas<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(tas<span class="sc">$</span>year)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>tas, <span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>tas<span class="fl">-273.15</span>)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Year&quot;</span>, <span class="at">y=</span><span class="st">&quot;Mean global annual mean temperature (°C)&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>                     <span class="at">strip.placement=</span> <span class="st">&quot;outside&quot;</span>,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.9</span>,<span class="fl">0.905</span>),</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.x=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>),</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.y=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>))</span></code></pre></div>
+</div>
+<div id="mean-global-annual-mean-temperature" class="section level2">
+<h2>Mean global annual mean temperature</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare mean 31-yr average temperature for 2050, 2080 among RCPs</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>runsub <span class="ot">&lt;-</span> runmean31_tas <span class="sc">%&gt;%</span> <span class="fu">filter</span>(scenario <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;rcp26&quot;</span>, <span class="st">&quot;rcp60&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;2050&quot;</span>, <span class="st">&quot;2080&quot;</span>)) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year, scenario, model)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(runsub)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="st">&quot;tas&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>runsub<span class="sc">$</span>tas <span class="ot">&lt;-</span> runsub<span class="sc">$</span>tas <span class="sc">-</span> <span class="fl">286.7891</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate 31yr running mean from EWEMBI data</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>tas<span class="sc">$</span>year <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">year</span>(tas<span class="sc">$</span>year)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>runmean31_tas <span class="ot">&lt;-</span> zoo<span class="sc">::</span><span class="fu">rollapply</span>(zoo<span class="sc">::</span><span class="fu">as.zoo</span>(tas[,<span class="fu">c</span>(<span class="st">&quot;tas&quot;</span>, <span class="st">&quot;year&quot;</span>)]), <span class="dv">31</span>, mean, <span class="at">na.rm=</span><span class="cn">TRUE</span>, <span class="at">partial=</span><span class="cn">TRUE</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>runmean31_tas <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(runmean31_tas)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>runmean31_tas[runmean31_tas<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">1995</span>,]</span></code></pre></div>
+</div>
+<div id="mean-global-annual-maximum-temperature" class="section level2">
+<h2>Mean global annual maximum temperature</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List tasmax files</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tasmax_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP2b/InputData/landonly&quot;</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;^tasmax_.*.nc4&quot;</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>, <span class="at">recursive=</span>T)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create outfile names</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>outfiles <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;tasmax_day&quot;</span>, <span class="st">&quot;yearmax_tas&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;InputData/landonly&quot;</span>, <span class="st">&quot;DerivedInputData/globalmeans/&quot;</span>, tasmax_files))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load landsea mask</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>landseamask <span class="ot">&lt;-</span> <span class="fu">paste0</span>(filedir, <span class="st">&quot;ISIMIP2b/InputData/landseamask/ISIMIP2b_landseamask_generic.nc4&quot;</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate global mean annual maximum temperature</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y) {<span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(y)){<span class="fu">system</span>(<span class="fu">paste0</span>(<span class="st">&#39;cdo fldmean -yearmax -ifthen &#39;</span>, landseamask, <span class="st">&quot; &quot;</span>, x, <span class="st">&#39; &#39;</span>, y))}}, <span class="at">x=</span>tasmax_files, <span class="at">y=</span>outfiles)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Without landsea subset</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y) {<span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(y)){<span class="fu">system</span>(<span class="fu">paste0</span>(<span class="st">&#39;cdo fldmean -yearmax &#39;</span>, x, <span class="st">&#39; &#39;</span>, y))}}, <span class="at">x=</span>tasmax_files, <span class="at">y=</span>outfiles)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Save outfiles in csv file</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>yearmax_tas <span class="ot">&lt;-</span> <span class="fu">lapply</span>(outfiles, <span class="cf">function</span>(x){</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  nc <span class="ot">&lt;-</span> ncdf4<span class="sc">::</span><span class="fu">nc_open</span>(x)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  tasmax <span class="ot">&lt;-</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  tasmax <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(tasmax)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  timeref <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">strsplit</span>(nc<span class="sc">$</span>dim[[<span class="dv">1</span>]]<span class="sc">$</span>units, <span class="st">&quot; &quot;</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]) </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)[<span class="dv">1</span>] <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    tasmax<span class="sc">$</span>year <span class="ot">&lt;-</span> timeref <span class="sc">+</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)[<span class="dv">1</span>] <span class="sc">!=</span> <span class="dv">0</span>){</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    tasmax<span class="sc">$</span>year <span class="ot">&lt;-</span> timeref <span class="sc">+</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  ncdf4<span class="sc">::</span><span class="fu">nc_close</span>(nc)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  tasmax<span class="sc">$</span>model <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(x, <span class="at">split=</span><span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  tasmax<span class="sc">$</span>scenario <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(x, <span class="at">split=</span><span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">4</span>]</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tasmax)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>yearmax_tas <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, tasmax)</span></code></pre></div>
+</div>
+<div id="mean-global-annual-total-precipitation" class="section level2">
+<h2>Mean global annual total precipitation</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pr_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(filedir, <span class="st">&quot;/ISIMIP2b/InputData/landonly&quot;</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern=</span><span class="st">&quot;^pr_.*.nc4&quot;</span>, <span class="at">full.names=</span><span class="cn">TRUE</span>, <span class="at">recursive=</span>T)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>outfiles <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;pr_day&quot;</span>, <span class="st">&quot;yearsum_pr&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;InputData/landonly&quot;</span>, <span class="st">&quot;DerivedInputData/globalmeans&quot;</span>, pr_files))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>landseamask <span class="ot">&lt;-</span> <span class="fu">paste0</span>(filedir, <span class="st">&quot;ISIMIP2b/InputData/landseamask/ISIMIP2b_landseamask_generic.nc4&quot;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y) {<span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(y)){<span class="fu">system</span>(<span class="fu">paste0</span>(<span class="st">&#39;cdo fldmean -yearsum -ifthen &#39;</span>, landseamask, <span class="st">&quot; &quot;</span>, x, <span class="st">&#39; &#39;</span>, y))}}, <span class="at">x=</span>pr_files, <span class="at">y=</span>outfiles)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Without landsea subset</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="at">FUN=</span><span class="cf">function</span>(x,y) {<span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(y)){<span class="fu">system</span>(<span class="fu">paste0</span>(<span class="st">&#39;cdo fldmean -yearsum &#39;</span>, x, <span class="st">&#39; &#39;</span>, y))}}, <span class="at">x=</span>pr_files, <span class="at">y=</span>outfiles)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Save outfiles in csv file</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>yearsum_pr <span class="ot">&lt;-</span> <span class="fu">lapply</span>(outfiles, <span class="cf">function</span>(x){</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  nc <span class="ot">&lt;-</span> ncdf4<span class="sc">::</span><span class="fu">nc_open</span>(x)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  pr <span class="ot">&lt;-</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  pr <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(pr)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  timeref <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">strsplit</span>(nc<span class="sc">$</span>dim[[<span class="dv">1</span>]]<span class="sc">$</span>units, <span class="st">&quot; &quot;</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]) </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)[<span class="dv">1</span>] <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    pr<span class="sc">$</span>year <span class="ot">&lt;-</span> timeref <span class="sc">+</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time)[<span class="dv">1</span>] <span class="sc">!=</span> <span class="dv">0</span>){</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    pr<span class="sc">$</span>year <span class="ot">&lt;-</span> timeref <span class="sc">+</span> ncdf4<span class="sc">::</span><span class="fu">ncvar_get</span>(nc, nc<span class="sc">$</span>dim<span class="sc">$</span>time) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  ncdf4<span class="sc">::</span><span class="fu">nc_close</span>(nc)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  pr<span class="sc">$</span>model <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(x, <span class="at">split=</span><span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">3</span>]</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  pr<span class="sc">$</span>scenario <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(x, <span class="at">split=</span><span class="st">&quot;_&quot;</span>)[[<span class="dv">1</span>]][<span class="dv">4</span>]</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(pr)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>yearsum_pr <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, yearsum_pr)</span></code></pre></div>
+</div>
+<div id="calculate-31-year-mean" class="section level2">
+<h2>Calculate 31-year mean</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate 31yr running mean</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>runmean31_tasmax <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">unique</span>(yearmax_tas<span class="sc">$</span>model), <span class="cf">function</span>(x){</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a> data_agg <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">unique</span>(yearmax_tas<span class="sc">$</span>scenario), <span class="cf">function</span>(y){</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>   data <span class="ot">&lt;-</span> yearmax_tas[yearmax_tas<span class="sc">$</span>model <span class="sc">==</span> x,]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>   data <span class="ot">&lt;-</span> data[data<span class="sc">$</span>scenario <span class="sc">==</span> y,]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>   data<span class="sc">$</span>year <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">year</span>(data<span class="sc">$</span>year)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>   data_mean <span class="ot">&lt;-</span> zoo<span class="sc">::</span><span class="fu">rollapply</span>(zoo<span class="sc">::</span><span class="fu">as.zoo</span>(data[,<span class="fu">c</span>(<span class="st">&quot;tasmax&quot;</span>, <span class="st">&quot;year&quot;</span>)]), <span class="dv">31</span>, mean, <span class="at">na.rm=</span><span class="cn">TRUE</span>, <span class="at">partial=</span><span class="cn">TRUE</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   data_mean <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(data_mean)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>   data_mean<span class="sc">$</span>scenario <span class="ot">&lt;-</span> y</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>   <span class="fu">return</span>(data_mean)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a> })</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a> data_agg <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, data_agg)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a> data_agg<span class="sc">$</span>model <span class="ot">&lt;-</span> x</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a> <span class="fu">return</span>(data_agg)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>runmean31_tasmax <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, runmean31_tasmax)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate 31yr running mean</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>runmean31_prsum <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">unique</span>(yearsum_pr<span class="sc">$</span>model), <span class="cf">function</span>(x){</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a> data_agg <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">unique</span>(yearsum_pr<span class="sc">$</span>scenario), <span class="cf">function</span>(y){</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>   data <span class="ot">&lt;-</span> yearsum_pr[yearsum_pr<span class="sc">$</span>model <span class="sc">==</span> x,]</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>   data <span class="ot">&lt;-</span> data[data<span class="sc">$</span>scenario <span class="sc">==</span> y,]</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>   data<span class="sc">$</span>year <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">year</span>(data<span class="sc">$</span>year)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>   data_mean <span class="ot">&lt;-</span> zoo<span class="sc">::</span><span class="fu">rollapply</span>(zoo<span class="sc">::</span><span class="fu">as.zoo</span>(data[,<span class="fu">c</span>(<span class="st">&quot;pr&quot;</span>, <span class="st">&quot;year&quot;</span>)]), <span class="dv">31</span>, mean, <span class="at">na.rm=</span><span class="cn">TRUE</span>, <span class="at">partial=</span><span class="cn">TRUE</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>   data_mean <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(data_mean)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>   data_mean<span class="sc">$</span>scenario <span class="ot">&lt;-</span> y</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>   <span class="fu">return</span>(data_mean)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a> })</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a> data_agg <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, data_agg)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a> data_agg<span class="sc">$</span>model <span class="ot">&lt;-</span> x</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a> <span class="fu">return</span>(data_agg)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>runmean31_prsum <span class="ot">&lt;-</span> <span class="fu">do.call</span>(<span class="st">&quot;rbind&quot;</span>, runmean31_prsum)</span></code></pre></div>
+<div id="plots" class="section level3">
+<h3>Plots</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create simple plot </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>yearmax_tas<span class="sc">$</span>year <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">year</span>(yearmax_tas<span class="sc">$</span>year)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>yearmax_tas, <span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>tasmax<span class="fl">-273.15</span>, <span class="at">colour=</span>scenario)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> model, <span class="at">scales=</span><span class="st">&quot;free_y&quot;</span>, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#facet_grid(var~model, scales=&quot;free_y&quot;, switch=&quot;y&quot;) + </span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Year&quot;</span>, <span class="at">y=</span><span class="st">&quot;Mean global annual maximum temperature (°C)&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">1650</span>, <span class="dv">2310</span>), <span class="at">expand=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">1700</span>, <span class="dv">1800</span>, <span class="dv">1900</span>, <span class="dv">2000</span>, <span class="dv">2100</span>, <span class="dv">2200</span>, <span class="dv">2300</span>)) <span class="sc">+</span> </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_colour_manual(values=c(&quot;black&quot;, &quot;darkgrey&quot;, &quot;blue&quot;, &quot;yellow&quot;)) + </span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">strip.placement=</span> <span class="st">&quot;outside&quot;</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.9</span>,<span class="fl">0.905</span>),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.x=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.y=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create simple plot </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>yearsum_pr<span class="sc">$</span>year <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">year</span>(yearsum_pr<span class="sc">$</span>year)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>yearsum_pr, <span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>pr<span class="sc">*</span><span class="dv">86400</span>, <span class="at">colour=</span>scenario)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> model, <span class="at">scales=</span><span class="st">&quot;free_y&quot;</span>, <span class="at">ncol=</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Year&quot;</span>, <span class="at">y=</span><span class="st">&quot;Mean global annual total precipitation (mm)&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_x_date() + </span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">1650</span>, <span class="dv">2310</span>), <span class="at">expand=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>), </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks=</span><span class="fu">c</span>(<span class="dv">1700</span>, <span class="dv">1800</span>, <span class="dv">1900</span>, <span class="dv">2000</span>, <span class="dv">2100</span>, <span class="dv">2200</span>, <span class="dv">2300</span>)) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_colour_manual(values=c(&quot;black&quot;, &quot;darkgrey&quot;, &quot;blue&quot;, &quot;yellow&quot;)) + </span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">strip.placement=</span> <span class="st">&quot;outside&quot;</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.9</span>,<span class="fl">0.905</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.x=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>),</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.y=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>yearsum_ipsl <span class="ot">&lt;-</span> yearsum_pr <span class="sc">%&gt;%</span> <span class="fu">filter</span>(model <span class="sc">==</span> <span class="st">&quot;IPSL-CM5A-LR&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>yearsum_ipsl<span class="sc">$</span>var <span class="ot">&lt;-</span> <span class="st">&quot;pr&quot;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(yearsum_ipsl)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">&quot;value&quot;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>yearsum_ipsl<span class="sc">$</span>value <span class="ot">&lt;-</span> yearsum_ipsl<span class="sc">$</span>value<span class="sc">*</span><span class="dv">86400</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>yearmax_ipsl <span class="ot">&lt;-</span> yearmax_tas <span class="sc">%&gt;%</span> <span class="fu">filter</span>(model <span class="sc">==</span> <span class="st">&quot;IPSL-CM5A-LR&quot;</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>yearmax_ipsl<span class="sc">$</span>var <span class="ot">&lt;-</span> <span class="st">&quot;tasmax&quot;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(yearmax_ipsl)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">&quot;value&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>yearmax_ipsl<span class="sc">$</span>value <span class="ot">&lt;-</span> yearmax_ipsl<span class="sc">$</span>value<span class="fl">-273.15</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>yearvar_ipsl <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(yearsum_ipsl, yearmax_ipsl)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>yearvar_ipsl, <span class="fu">aes</span>(<span class="at">x=</span>year, <span class="at">y=</span>value, <span class="at">colour=</span>scenario)) <span class="sc">+</span> </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span> var, <span class="at">scales=</span><span class="st">&quot;free_y&quot;</span>, <span class="at">ncol=</span><span class="dv">1</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                           <span class="at">strip.position=</span><span class="st">&quot;left&quot;</span>, <span class="at">labeller=</span> <span class="fu">as_labeller</span>(<span class="fu">c</span>(<span class="at">pr=</span><span class="st">&quot;Mean global annual total precipitation (mm)&quot;</span>, <span class="at">tasmax=</span><span class="st">&quot;Mean global annual maximum temperature (°C)&quot;</span>))) <span class="sc">+</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Year&quot;</span>, <span class="at">y=</span><span class="st">&quot;&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>() <span class="sc">+</span> </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#scale_colour_manual(values=c(&quot;black&quot;, &quot;darkgrey&quot;, &quot;blue&quot;, &quot;yellow&quot;)) + </span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">strip.background=</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">strip.placement=</span> <span class="st">&quot;outside&quot;</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.06</span>,<span class="fl">0.9</span>),</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">legend.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="cn">NA</span>),</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.x=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>),</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>                     <span class="at">panel.spacing.y=</span><span class="fu">unit</span>(<span class="fl">0.25</span>, <span class="st">&quot;lines&quot;</span>))</span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+---
+title: "Temperature thresholds and time slices"
+author: "RS-eco"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Temperature thresholds and time slices}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This is a replicate of the temperature thresholds and time slices article from [the ISIMIP Website](https://www.isimip.org/protocol/temperature-thresholds-and-time-slices/).
+
+Here are some thoughts on how ISIMIP2b simulations can be analysed to address different scientific questions involving global-mean temperature thresholds. You are invited to comment and add to these notes, which are intended to assist the entire ISIMIP community, whilst not being prescriptive. The precise nature of the scientific question will determine the appropriate method for handling thresholds.
+
+```{r temperature_thresholds, fig.width=9, fig.height=6}
+library(rISIMIP)
+data("yearmean_tas", package="rISIMIP")
+data("runmean31_tas", package="rISIMIP")
+
+# Change scenario names of mixed scenario data
+runmean31_tas$scenario[runmean31_tas$scenario %in% c("piControl-historical-rcp26", "piControl-historical-rcp45","piControl-historical-rcp60","piControl-historical-rcp85") & 
+                         runmean31_tas$year < 1860] <- "piControl"
+runmean31_tas$scenario[runmean31_tas$scenario %in% c("piControl-historical-rcp26", "piControl-historical-rcp45","piControl-historical-rcp60","piControl-historical-rcp85") & 
+                         runmean31_tas$year >= 1860 & runmean31_tas$year <= 2005] <- "historical"
+runmean31_tas$scenario[runmean31_tas$scenario == "piControl-historical-rcp26" & runmean31_tas$year > 2005] <- "rcp26"
+runmean31_tas$scenario[runmean31_tas$scenario == "piControl-historical-rcp45" & runmean31_tas$year > 2005] <- "rcp45"
+runmean31_tas$scenario[runmean31_tas$scenario == "piControl-historical-rcp60" & runmean31_tas$year > 2005] <- "rcp60"
+runmean31_tas$scenario[runmean31_tas$scenario == "piControl-historical-rcp85" & runmean31_tas$year > 2005] <- "rcp85"
+
+# Merge data for plotting
+all_data <- dplyr::left_join(yearmean_tas, runmean31_tas, by=c("year", "model", "scenario"))
+
+# Add missing data to all_data
+all_data$model <- factor(all_data$model, levels=c("IPSL-CM5A-LR", "GFDL-ESM2M", "MIROC5", "HadGEM2-ES"))
+all_data$`tas(K).x` <- all_data$`tas(K).x`-273.15
+all_data$`tas(K).y` <- all_data$`tas(K).y`-273.15
+
+# Calculate deltaT from 1661-1860 piControl mean temperature
+library(dplyr)
+baseline_data <- all_data %>% group_by(model) %>% filter(scenario == "piControl", year >= 1661, year <= 1860) %>% summarise(baseline = mean(`tas(K).x`))
+all_data <- left_join(all_data, baseline_data)
+all_data$deltaT <- all_data$`tas(K).y` - all_data$baseline
+  
+all_data_long <- tidyr::gather(all_data, "var", "tas", -c(year, model, scenario, baseline))
+all_data_long$var <- factor(all_data_long$var, labels=c("1"=paste("31-yr running mean ", '\U0394', "T (°C)"), "2"="annual T (°C)", "3"="31-yr running mean T (°C)"))
+all_data_long$var <- factor(all_data_long$var, levels=levels(all_data_long$var)[c(2,3,1)])
+
+library(ggplot2)
+ggplot(data=all_data_long, aes(x=year, y=tas, colour=scenario)) + geom_line() + 
+  facet_grid(var~model, scales="free_y", switch="y") + labs(x="", y="") + 
+  scale_x_continuous(breaks=c(1700, 1800, 1900, 2000, 2100, 2200), 
+                     limits=c(1650, 2310), expand = c(0,0)) + 
+  scale_colour_manual(name="", values=c("black", "grey", "blue", "green", "yellow", "red")) + 
+  theme_bw() + theme(strip.background= element_blank(),
+                     strip.placement= "outside",
+                     legend.position = c(0.06,0.86),
+                     legend.title = element_blank(),
+                     legend.background = element_rect(fill = NA),
+                     panel.spacing.x=unit(0.25, "lines"),
+                     panel.spacing.y=unit(0.25, "lines"))
+
+#all_data_long %>% filter(year >= 1985 & year <= 2085) %>% group_by(year, scenario, var) %>% 
+#  summarise(mean=mean(tas, na.rm=T), min=min(tas, na.rm=T), max=max(tas, na.rm=T)) %>% 
+#  ggplot() + geom_ribbon(aes(x=year, ymin = min, ymax = max, fill=scenario), alpha=0.3) + 
+#  geom_line(aes(x=year, y=mean, linetype=scenario)) + 
+#  facet_wrap(var~., scales="free") + labs(x="", y="") + 
+#  scale_x_continuous(breaks=c(1990, 2020, 2050, 2080), 
+#                     limits=c(1985,2085), expand = c(0,0)) + 
+#  theme_bw() + theme(strip.background= element_blank(),
+#                     strip.placement= "outside",
+#                     legend.position = c(0.06,0.9),
+#                     legend.title = element_blank(),
+#                     legend.background = element_rect(fill = NA),
+#                     panel.spacing.x=unit(0.25, "lines"),
+#                     panel.spacing.y=unit(0.25, "lines"))
+```
+
+The plots show: (upper row) annual global mean tas; (middle row) 31-year running mean of global mean tas; (lower row) 31-year running mean of global mean tas minus 1661-1860 global mean piControl tas. Each column depicts a different global climate model and the colours represent the pre-industrial (grey), historical (black), RCP2.6 (blue), RCP4.5 (green), RCP6.0 (yellow), and RCP8.5 (red) scenarios.
+
+Below are tables of the year in which the 31-year running mean of global mean temperature crosses the given thresholds.
+
+```{r, echo=FALSE, asis=TRUE, message=FALSE, warning=FALSE}
+data("delta_runmean31_tas", package="rISIMIP")
+colnames(delta_runmean31_tas) <- c("GMT-threshold", "IPSL-CM5A-LR", 
+                                 "GFDL-ESM2M", "MIROC5", "HadGEM2-ES", "Scenario")
+delta_runmean31_tas <- delta_runmean31_tas[,c(6,1,2,3,4,5)]
+delta_runmean31_tas$Scenario <- factor(delta_runmean31_tas$Scenario, labels=c("RCP2.6", "RCP4.5", "RCP6.0", "RCP8.5"))
+knitr::kable(delta_runmean31_tas, "html") %>%
+  kableExtra::kable_styling(full_width = F) %>%
+  kableExtra::column_spec(1, bold=T) %>% kableExtra::collapse_rows(columns=1)
+```

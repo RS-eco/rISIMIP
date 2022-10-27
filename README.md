@@ -1,0 +1,445 @@
+rISIMIP - R package for accessing and analysing ISIMIP Environmental
+Data
+================
+
+## Overview
+
+`rISIMIP` is an R package for <!--downloading,--> accessing and
+analysing data provided by the Inter-sectoral Impact Model
+Intercomparison Project (ISIMIP). Data from the different simulation
+rounds (ISIMIP2a, ISIMIP2b, ISIMIP3a, ISIMIP3b) is available from
+[here](https://esg.pik-potsdam.de/search/isimip/). For more information
+on the different data types and data input and output products have a
+look at the [ISIMIP Website](https://www.isimip.org/). The package
+currently consists of two functions:
+
+<!--* `getISIMIP()` downloads ISIMIP data -->
+<!-- getISIMIP should call listISIMIP() and than run download!!!-->
+
+-   `readISIMIP()` reads and pre-processes ISIMIP data
+-   `listISIMIP()` creates a list of requested ISIMIP data files
+
+You can learn more about them in `vignette("rISIMIP")`.
+
+An example of extracting country-specific data from ISIMIP2b can be
+found in `vignette("country-specific")`.
+
+## Installation
+
+To *use* the package, install it directly from GitHub using the
+`remotes` package:
+
+``` r
+# Install remotes if not previously installed
+if(!"remotes" %in% installed.packages()[,"Package"]) install.packages("remotes")
+
+# Install rISIMIP from Github if not previously installed
+if(!"rISIMIP" %in% installed.packages()[,"Package"]) remotes::install_github("RS-eco/rISIMIP", build_vignettes = TRUE)
+```
+
+**If you encounter a bug or if you have any problems, please file an
+[issue](https://github.com/RS-eco/rISIMIP/issues) on Github.**
+
+## Usage
+
+``` r
+# Load rISIMIP package
+library(rISIMIP)
+```
+
+### List ISIMIP files
+
+The function `listISIMIP` just lists all climate files for the desired
+time period, model and variable. The files can then be put into the
+`aggregateNC` function of the `processNC` package for processing the
+required NetCDF files.
+
+``` r
+# List urban area files for histsoc scenario - ISIMIP2b
+listISIMIP(path="I:/", version="ISIMIP2b", type="landuse", 
+           scenario="histsoc", var="urbanareas", startyear=1861, endyear=2005)
+
+# List crop data files for histsoc scenario - ISIMIP3b
+listISIMIP(path="I:/", version="ISIMIP3b", type="landuse", 
+           scenario="histsoc", var="5crops", startyear=1861, endyear=2005)
+```
+
+**Note:** The path must lead to a file directory on your computer, which
+contains the required ISIMIP files. You can download the required ISIMIP
+data files from: <https://esg.pik-potsdam.de/search/isimip/>
+
+### Read ISIMIP files
+
+With `readISIMIP` you can read one or multiple ISIMIP datafiles into a
+raster stack.
+
+``` r
+# Read urban area file for 2005soc scenario - ISIMIP2b
+(urbanareas_1970_1999 <- readISIMIP(path="I:/", type="landuse", scenario="2005soc", 
+                                    var="urbanareas", startyear=1970, endyear=1999))
+
+# Read pasture file for 2015soc scenario - ISIMIP3b
+(pastures_1970_1999 <- readISIMIP(path="I:/", type="landuse", scenario="2015soc", 
+                                    var="pastures", startyear=1970, endyear=1999))
+```
+
+However, this is not useful if you are interested in long time periods,
+as one datafile is about 7 GB in size and you will quickly run into
+memory limitations.
+
+## Internal data
+
+`rISIMIP` contains various pre-processed data. See the *data-raw* folder
+for how we derived the included datasets.
+
+### Temperature thresholds
+
+Annual global mean temperature as well as the 31-year running mean were
+calculated for each GCM and four RCPs (RCP2.6, RCP4.5, RCP6.0 and
+RCP8.5). Furthermore, the year when the 31-year runnning mean of global
+mean temperature crosses a certain temperature threshold has been
+calculated. The data has been provided by ISIMIP and a summary of it can
+be accessed from the `vignette("temperature-thresholds")` vignette and
+is also available from [the ISIMIP
+Website](https://www.isimip.org/protocol/temperature-thresholds-and-time-slices/).
+
+### Landseamask
+
+The landseamask used by ISIMIP has been included in the package and can
+be accessed by:
+
+``` r
+data("landseamask_generic")
+```
+
+### Bioclimatic data
+
+The code for calculating global bioclimatic data from ISIMIP2b and
+ISIMIP3b mnodel output can be found in `vignette("global-landonly")` and
+`vignette("global-landonly-isimip3b")` respectively.
+
+#### ISIMIP2b & EWEMBI
+
+Current and future bioclimatic data for three 30-yr periods (1995, 2050,
+2080) was derived from the EWEMBI
+(<https://esg.pik-potsdam.de/search/isimip/?project=ISIMIP2b&product=input_secondary&dataset_type=Climate+atmosphere+observed>)
+and ISIMIP2b data
+(<https://esg.pik-potsdam.de/search/isimip/?project=ISIMIP2b&product=input&dataset_type=Climate+atmosphere+simulated>)
+and is included in this package.
+
+**EWEMBI - 1995**
+
+``` r
+data("bioclim_ewembi_1995_landonly")
+
+library(dplyr); library(sf); library(ggplot2)
+data(outline, package="ggmap2")
+outline <- sf::st_as_sf(outline)
+col_val <- scales::rescale(unique(c(seq(min(bioclim_ewembi_1995_landonly$bio1), 0, length=5),
+                                    seq(0, max(bioclim_ewembi_1995_landonly$bio1), length=5))))
+
+bioclim_ewembi_1995_landonly %>% select(x,y,bio1) %>% 
+  ggplot() + geom_tile(aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(bioclim_ewembi_1995_landonly$bio1)-2, 
+             max(bioclim_ewembi_1995_landonly$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(bioclim_ewembi_1995_landonly$x), 
+                  max(bioclim_ewembi_1995_landonly$x)), 
+           ylim=c(min(bioclim_ewembi_1995_landonly$y),
+                  max(bioclim_ewembi_1995_landonly$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_1995-1.png)<!-- -->
+
+**RCP2.6 - 2080**
+
+``` r
+data("bioclim_gfdl-esm2m_rcp26_2080_landonly")
+data("bioclim_hadgem2-es_rcp26_2080_landonly")
+data("bioclim_ipsl-cm5a-lr_rcp26_2080_landonly")
+data("bioclim_miroc5_rcp26_2080_landonly")
+
+bioclim_rcp26_2080_landonly <- bind_rows(`bioclim_gfdl-esm2m_rcp26_2080_landonly`, 
+                                         `bioclim_hadgem2-es_rcp26_2080_landonly`, 
+                                         `bioclim_ipsl-cm5a-lr_rcp26_2080_landonly`, 
+                                         `bioclim_miroc5_rcp26_2080_landonly`) %>% 
+  select(x,y,bio1) %>% group_by(x,y) %>% summarise(bio1=mean(bio1, na.rm=T))
+col_val <- scales::rescale(unique(c(seq(min(bioclim_rcp26_2080_landonly$bio1), 0, length=5),
+                                    seq(0, max(bioclim_rcp26_2080_landonly$bio1), length=5))))
+
+ggplot() + geom_tile(data=bioclim_rcp26_2080_landonly, aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(bioclim_rcp26_2080_landonly$bio1)-2, 
+             max(bioclim_rcp26_2080_landonly$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(bioclim_rcp26_2080_landonly$x), 
+                  max(bioclim_rcp26_2080_landonly$x)), 
+           ylim=c(min(bioclim_rcp26_2080_landonly$y),
+                  max(bioclim_rcp26_2080_landonly$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_2080_rcp26-1.png)<!-- -->
+
+**RCP6.0 - 2080**
+
+``` r
+data("bioclim_gfdl-esm2m_rcp60_2080_landonly")
+data("bioclim_hadgem2-es_rcp60_2080_landonly")
+data("bioclim_ipsl-cm5a-lr_rcp60_2080_landonly")
+data("bioclim_miroc5_rcp60_2080_landonly")
+
+bioclim_rcp60_2080_landonly <- bind_rows(`bioclim_gfdl-esm2m_rcp60_2080_landonly`, 
+                                         `bioclim_hadgem2-es_rcp60_2080_landonly`, 
+                                         `bioclim_ipsl-cm5a-lr_rcp60_2080_landonly`,
+                                         `bioclim_miroc5_rcp60_2080_landonly`) %>% 
+  select(x,y,bio1) %>% group_by(x,y) %>% summarise(bio1=mean(bio1, na.rm=T))
+col_val <- scales::rescale(unique(c(seq(min(bioclim_rcp60_2080_landonly$bio1), 0, length=5),
+                                    seq(0, max(bioclim_rcp60_2080_landonly$bio1), length=5))))
+
+ggplot() + geom_tile(data=bioclim_rcp60_2080_landonly, aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(bioclim_rcp60_2080_landonly$bio1)-2, 
+             max(bioclim_rcp60_2080_landonly$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(bioclim_rcp60_2080_landonly$x), 
+                  max(bioclim_rcp60_2080_landonly$x)), 
+           ylim=c(min(bioclim_rcp60_2080_landonly$y),
+                  max(bioclim_rcp60_2080_landonly$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_2080_rcp60-1.png)<!-- -->
+
+**RCP8.5 - 2080**
+
+``` r
+data("bioclim_gfdl-esm2m_rcp85_2080_landonly")
+data("bioclim_hadgem2-es_rcp85_2080_landonly")
+data("bioclim_ipsl-cm5a-lr_rcp85_2080_landonly")
+data("bioclim_miroc5_rcp85_2080_landonly")
+
+bioclim_rcp85_2080_landonly <- bind_rows(`bioclim_gfdl-esm2m_rcp85_2080_landonly`, 
+                                         `bioclim_hadgem2-es_rcp85_2080_landonly`, 
+                                         `bioclim_ipsl-cm5a-lr_rcp85_2080_landonly`,
+                                         `bioclim_miroc5_rcp85_2080_landonly`) %>% 
+  select(x,y,bio1) %>% group_by(x,y) %>% summarise(bio1=mean(bio1, na.rm=T))
+col_val <- scales::rescale(unique(c(seq(min(bioclim_rcp85_2080_landonly$bio1), 0, length=5),
+                                    seq(0, max(bioclim_rcp85_2080_landonly$bio1), length=5))))
+
+ggplot() + geom_tile(data=bioclim_rcp85_2080_landonly, aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(bioclim_rcp85_2080_landonly$bio1)-2, 
+             max(bioclim_rcp85_2080_landonly$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(bioclim_rcp85_2080_landonly$x), 
+                  max(bioclim_rcp85_2080_landonly$x)), 
+           ylim=c(min(bioclim_rcp85_2080_landonly$y),
+                  max(bioclim_rcp85_2080_landonly$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_2080_rcp85-1.png)<!-- -->
+
+#### ISIMIP3b & GSWP3-W5E5
+
+Current and future bioclimatic data for five 30-yr periods (1995, 2000,
+2005, 2050, 2080) was derived from the GSWP3-W5E5 and ISIMIP3b data
+(<https://esg.pik-potsdam.de/search/isimip/?project=ISIMIP3b&product=input&dataset_type=Climate+atmosphere+simulated>)
+and is included in this package.
+
+**GSWP3_W5E5 - 2005**
+
+``` r
+data("bioclim_gswp3-w5e5_obsclim_2005_landonly")
+
+library(dplyr); library(sf); library(ggplot2)
+data(outline, package="ggmap2")
+outline <- sf::st_as_sf(outline)
+col_val <- scales::rescale(unique(c(seq(min(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$bio1), 0, length=5),
+                                    seq(0, max(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$bio1), length=5))))
+
+`bioclim_gswp3-w5e5_obsclim_2005_landonly` %>% select(x,y,bio1) %>% 
+  ggplot() + geom_tile(aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$bio1)-2, 
+             max(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$x), 
+                  max(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$x)), 
+           ylim=c(min(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$y),
+                  max(`bioclim_gswp3-w5e5_obsclim_2005_landonly`$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_2005-1.png)<!-- -->
+
+**SSP126 - 2080**
+
+``` r
+data("bioclim_gfdl-esm4_ssp126_2080_landonly")
+data("bioclim_ipsl-cm6a-lr_ssp126_2080_landonly")
+data("bioclim_mpi-esm1-2-hr_ssp126_2080_landonly")
+data("bioclim_mri-esm2-0_ssp126_2080_landonly")
+data("bioclim_ukesm1-0-ll_ssp126_2080_landonly")
+
+bioclim_ssp126_2080_landonly <- bind_rows(`bioclim_gfdl-esm4_ssp126_2080_landonly`, 
+                                         `bioclim_ipsl-cm6a-lr_ssp126_2080_landonly`, 
+                                         `bioclim_mpi-esm1-2-hr_ssp126_2080_landonly`, 
+                                         `bioclim_mri-esm2-0_ssp126_2080_landonly`,
+                                         `bioclim_ukesm1-0-ll_ssp126_2080_landonly`) %>% 
+  select(x,y,bio1) %>% group_by(x,y) %>% summarise(bio1=mean(bio1, na.rm=T))
+col_val <- scales::rescale(unique(c(seq(min(bioclim_ssp126_2080_landonly$bio1), 0, length=5),
+                                    seq(0, max(bioclim_ssp126_2080_landonly$bio1), length=5))))
+
+ggplot() + geom_tile(data=bioclim_ssp126_2080_landonly, aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(bioclim_ssp126_2080_landonly$bio1)-2, 
+             max(bioclim_ssp126_2080_landonly$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(bioclim_ssp126_2080_landonly$x), 
+                  max(bioclim_ssp126_2080_landonly$x)), 
+           ylim=c(min(bioclim_ssp126_2080_landonly$y),
+                  max(bioclim_ssp126_2080_landonly$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_2080_ssp126-1.png)<!-- -->
+
+**SSP370 - 2080**
+
+``` r
+data("bioclim_gfdl-esm4_ssp370_2080_landonly")
+data("bioclim_ipsl-cm6a-lr_ssp370_2080_landonly")
+data("bioclim_mpi-esm1-2-hr_ssp370_2080_landonly")
+data("bioclim_mri-esm2-0_ssp370_2080_landonly")
+data("bioclim_ukesm1-0-ll_ssp370_2080_landonly")
+
+bioclim_ssp370_2080_landonly <- bind_rows(`bioclim_gfdl-esm4_ssp370_2080_landonly`, 
+                                         `bioclim_ipsl-cm6a-lr_ssp370_2080_landonly`, 
+                                         `bioclim_mpi-esm1-2-hr_ssp370_2080_landonly`, 
+                                         `bioclim_mri-esm2-0_ssp370_2080_landonly`,
+                                         `bioclim_ukesm1-0-ll_ssp370_2080_landonly`) %>% 
+  select(x,y,bio1) %>% group_by(x,y) %>% summarise(bio1=mean(bio1, na.rm=T))
+col_val <- scales::rescale(unique(c(seq(min(bioclim_ssp370_2080_landonly$bio1), 0, length=5),
+                                    seq(0, max(bioclim_ssp370_2080_landonly$bio1), length=5))))
+
+ggplot() + geom_tile(data=bioclim_ssp370_2080_landonly, aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(bioclim_ssp370_2080_landonly$bio1)-2, 
+             max(bioclim_ssp370_2080_landonly$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(bioclim_ssp370_2080_landonly$x), 
+                  max(bioclim_ssp370_2080_landonly$x)), 
+           ylim=c(min(bioclim_ssp370_2080_landonly$y),
+                  max(bioclim_ssp370_2080_landonly$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_2080_ssp370-1.png)<!-- -->
+
+**SSP585 - 2080**
+
+``` r
+data("bioclim_gfdl-esm4_ssp585_2080_landonly")
+data("bioclim_ipsl-cm6a-lr_ssp585_2080_landonly")
+data("bioclim_mpi-esm1-2-hr_ssp585_2080_landonly")
+data("bioclim_mri-esm2-0_ssp585_2080_landonly")
+data("bioclim_ukesm1-0-ll_ssp585_2080_landonly")
+
+bioclim_ssp585_2080_landonly <- bind_rows(`bioclim_gfdl-esm4_ssp585_2080_landonly`, 
+                                         `bioclim_ipsl-cm6a-lr_ssp585_2080_landonly`, 
+                                         `bioclim_mpi-esm1-2-hr_ssp585_2080_landonly`, 
+                                         `bioclim_mri-esm2-0_ssp585_2080_landonly`,
+                                         `bioclim_ukesm1-0-ll_ssp585_2080_landonly`) %>% 
+  select(x,y,bio1) %>% group_by(x,y) %>% summarise(bio1=mean(bio1, na.rm=T))
+col_val <- scales::rescale(unique(c(seq(min(bioclim_ssp585_2080_landonly$bio1), 0, length=5),
+                                    seq(0, max(bioclim_ssp585_2080_landonly$bio1), length=5))))
+
+ggplot() + geom_tile(data=bioclim_ssp585_2080_landonly, aes(x=x, y=y, fill=bio1)) + 
+  geom_sf(data=outline, fill="transparent", colour="black") + 
+  scale_fill_gradientn(name="tmean (°C)", colours=rev(colorRampPalette(
+    c("#00007F", "blue", "#007FFF", "cyan", 
+      "white", "yellow", "#FF7F00", "red", "#7F0000"))(255)),
+    na.value="transparent", values=col_val, 
+    limits=c(min(bioclim_ssp585_2080_landonly$bio1)-2, 
+             max(bioclim_ssp585_2080_landonly$bio1)+2)) + 
+  coord_sf(expand=F, 
+           xlim=c(min(bioclim_ssp585_2080_landonly$x), 
+                  max(bioclim_ssp585_2080_landonly$x)), 
+           ylim=c(min(bioclim_ssp585_2080_landonly$y),
+                  max(bioclim_ssp585_2080_landonly$y)), 
+           ndiscr=0) + theme_classic() + 
+  theme(axis.title = element_blank(), axis.line = element_blank(),
+        axis.ticks = element_blank(), axis.text = element_blank(),
+        plot.background = element_rect(fill = "transparent"), 
+        legend.background = element_rect(fill = "transparent"), 
+        legend.box.background = element_rect(fill = "transparent", colour=NA))
+```
+
+![](figures/bio1_2080_ssp585-1.png)<!-- -->
